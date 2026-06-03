@@ -51,12 +51,24 @@ public class TaskService {
     }
 
     public TaskResponse update(Long id, UpdateTaskRequest request) {
+
         Task task = findTaskById(id);
 
-        task.updateName(request.name());
-        task.updateDescription(request.description());
-        task.updatePriority(request.priority());
-        task.updateStatus(request.status());
+        if (request.name() != null) {
+            task.updateName(request.name());
+        }
+
+        if (request.description() != null) {
+            task.updateDescription(request.description());
+        }
+
+        if (request.priority() != null) {
+            task.updatePriority(request.priority());
+        }
+
+        if (request.status() != null) {
+            task.updateStatus(request.status());
+        }
 
         Task savedTask = taskRepository.save(task);
 
