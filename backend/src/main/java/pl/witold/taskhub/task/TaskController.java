@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.witold.taskhub.task.dto.CreateTaskRequest;
 import pl.witold.taskhub.task.dto.TaskResponse;
 import pl.witold.taskhub.task.dto.UpdateTaskRequest;
+import pl.witold.taskhub.task.dto.ReplaceTaskRequest;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -39,6 +40,14 @@ public class TaskController {
             @RequestBody UpdateTaskRequest request
     ) {
         return taskService.update(id, request);
+    }
+
+    @PutMapping("/{id}")
+    public TaskResponse replace(
+            @PathVariable Long id,
+            @Valid @RequestBody ReplaceTaskRequest request
+    ) {
+        return taskService.replace(id, request);
     }
 
     @DeleteMapping("/{id}")

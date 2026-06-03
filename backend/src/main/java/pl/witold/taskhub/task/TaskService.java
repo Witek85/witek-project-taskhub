@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.witold.taskhub.task.dto.CreateTaskRequest;
 import pl.witold.taskhub.task.dto.TaskResponse;
 import pl.witold.taskhub.task.dto.UpdateTaskRequest;
+import pl.witold.taskhub.task.dto.ReplaceTaskRequest;
 
 @Service
 public class TaskService {
@@ -51,7 +52,6 @@ public class TaskService {
     }
 
     public TaskResponse update(Long id, UpdateTaskRequest request) {
-
         Task task = findTaskById(id);
 
         if (request.name() != null) {
@@ -69,6 +69,19 @@ public class TaskService {
         if (request.status() != null) {
             task.updateStatus(request.status());
         }
+
+        Task savedTask = taskRepository.save(task);
+
+        return toResponse(savedTask);
+    }
+
+    public TaskResponse replace(Long id, ReplaceTaskRequest request) {
+        Task task = findTaskById(id);
+
+        task.updateName(request.name());
+        task.updateDescription(request.description());
+        task.updatePriority(request.priority());
+        task.updateStatus(request.status());
 
         Task savedTask = taskRepository.save(task);
 
