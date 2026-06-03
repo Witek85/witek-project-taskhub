@@ -66,4 +66,28 @@ public class Task {
         this.priority = priority;
         this.status = status;
     }
+
+    public void updateName(String name) {
+        if (name != null) {
+            this.name = name;
+        }
+    }
+
+    public void updateDescription(String description) {
+        if (description != null) {
+            this.description = description;
+        }
+    }
+
+    public void updatePriority(TaskPriority priority) {
+        if (priority != null) {
+            this.priority = priority;
+        }
+    }
+
+    public void updateStatus(TaskStatus status) {
+        if (status != null) {
+            this.status = status;
+        }
+    }
 }

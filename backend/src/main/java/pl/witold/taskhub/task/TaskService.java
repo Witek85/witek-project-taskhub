@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.witold.taskhub.task.dto.CreateTaskRequest;
 import pl.witold.taskhub.task.dto.TaskResponse;
+import pl.witold.taskhub.task.dto.UpdateTaskRequest;
 
 @Service
 public class TaskService {
@@ -42,5 +43,33 @@ public class TaskService {
                 task.getCreatedAt(),
                 task.getUpdatedAt()
         );
+    }
+
+    public TaskResponse getById(Long id) {
+        Task task = findTaskById(id);
+        return toResponse(task);
+    }
+
+    public TaskResponse update(Long id, UpdateTaskRequest request) {
+        Task task = findTaskById(id);
+
+        task.updateName(request.name());
+        task.updateDescription(request.description());
+        task.updatePriority(request.priority());
+        task.updateStatus(request.status());
+
+        Task savedTask = taskRepository.save(task);
+
+        return toResponse(savedTask);
+    }
+
+    public void delete(Long id) {
+        Task task = findTaskById(id);
+        taskRepository.delete(task);
+    }
+
+    private Task findTaskById(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + id));
     }
 }
