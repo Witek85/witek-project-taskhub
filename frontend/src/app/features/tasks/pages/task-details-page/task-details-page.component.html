@@ -1,0 +1,20 @@
+@if (task(); as task) {
+  <p-card [header]="task.name">
+    <p>
+      {{ task.description }}
+    </p>
+
+    <p>
+      Priority:
+      <p-tag [value]="task.priority"></p-tag>
+    </p>
+
+    <p>
+      Status:
+      <p-tag [value]="task.status"></p-tag>
+    </p>
+
+    <p>Created: {{ task.createdAt }}</p>
+    <p>Updated: {{ task.updatedAt }}</p>
+  </p-card>
+}

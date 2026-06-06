@@ -1,0 +1,32 @@
+<h1>Tasks</h1>
+
+<p-table
+  [value]="tasks()"
+  [loading]="loading()"
+  dataKey="id"
+  styleClass="p-datatable-gridlines"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Priority</th>
+      <th>Status</th>
+      <th>Created</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-task>
+    <tr class="task-row" (click)="openTask(task)">
+      <td>{{ task.id }}</td>
+      <td>{{ task.name }}</td>
+      <td>
+        <p-tag [value]="task.priority"></p-tag>
+      </td>
+      <td>
+        <p-tag [value]="task.status"></p-tag>
+      </td>
+      <td>{{ task.createdAt }}</td>
+    </tr>
+  </ng-template>
+</p-table>
