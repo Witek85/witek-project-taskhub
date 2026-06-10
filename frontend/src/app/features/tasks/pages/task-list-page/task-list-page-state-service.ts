@@ -14,6 +14,8 @@ export class TaskListPageStateService {
   private _taskFilterForm: FormGroup<TaskFilterFormControls> = new FormGroup({
     name: new FormControl<string | null>(null),
     priority: new FormControl<TaskPriority | null>(null),
-    status: new FormControl<TaskStatus | null>(null)
+    status: new FormControl<TaskStatus | null>(null),
+    createdFrom: new FormControl<Date | null>(null),
+    createdTo: new FormControl<Date | null>(null)
   })
 }

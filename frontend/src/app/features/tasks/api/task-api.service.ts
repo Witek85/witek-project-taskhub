@@ -38,6 +38,14 @@ export class TaskApiService {
       params = params.set('status', criteria.status);
     }
 
+    if (criteria.createdFrom) {
+      params = params.set('createdFrom', criteria.createdFrom);
+    }
+
+    if (criteria.createdTo) {
+      params = params.set('createdTo', criteria.createdTo);
+    }
+
     return this.http.get<PageResponse<Task>>(`${this.apiUrl}/tasks`, { params });
   }
 

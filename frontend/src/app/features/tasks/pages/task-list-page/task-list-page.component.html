@@ -32,6 +32,30 @@
             placeholder="Select" 
           />
         </div>
+        <div class="flex flex-col grow basis-0 gap-2">
+          <label for="createdFrom">Created from</label>
+          <p-datepicker
+            inputId="createdFrom"
+            [formControl]="taskListPageStateService.taskFilterForm.controls.createdFrom"
+            [maxDate]="taskListPageStateService.taskFilterForm.controls.createdTo.value || undefined"
+            dateFormat="yy-mm-dd"
+            [showIcon]="true"
+            [showButtonBar]="true"
+            placeholder="From"
+          />
+        </div>
+        <div class="flex flex-col grow basis-0 gap-2">
+          <label for="createdTo">Created to</label>
+          <p-datepicker
+            inputId="createdTo"
+            [formControl]="taskListPageStateService.taskFilterForm.controls.createdTo"
+            [minDate]="taskListPageStateService.taskFilterForm.controls.createdFrom.value || undefined"
+            dateFormat="yy-mm-dd"
+            [showIcon]="true"
+            [showButtonBar]="true"
+            placeholder="To"
+          />
+        </div>
         <div class="flex items-end gap-2">
           <p-button
               type="button"

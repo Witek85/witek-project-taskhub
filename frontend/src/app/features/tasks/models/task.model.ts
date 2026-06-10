@@ -37,6 +37,8 @@ export interface TaskSearchCriteria {
   name?: string;
   priority?: TaskPriority;
   status?: TaskStatus;
+  createdFrom?: string;
+  createdTo?: string;
 }
 
 export type TaskFormControls = {
@@ -49,4 +51,6 @@ export type TaskFilterFormControls = {
   name: FormControl<string | null>;
   priority: FormControl<TaskPriority | null>;
   status: FormControl<TaskStatus | null>;
+  createdFrom: FormControl<Date | null>;
+  createdTo: FormControl<Date | null>;
 }

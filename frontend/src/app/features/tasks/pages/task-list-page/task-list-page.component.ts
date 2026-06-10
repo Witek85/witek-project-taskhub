@@ -20,10 +20,11 @@ import { TaskPriority } from '../../models/task-priority.model';
 import { TaskStatus } from '../../models/task-status.model';
 import { DictionaryOption } from '../../models/dictionary-option.model';
 import { SelectModule } from 'primeng/select';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-task-list-page',
-  imports: [TableModule, ButtonModule, TagModule, ConfirmDialogModule, ReactiveFormsModule, InputTextModule, SelectModule],
+  imports: [TableModule, ButtonModule, TagModule, ConfirmDialogModule, ReactiveFormsModule, InputTextModule, SelectModule, DatePickerModule],
   providers: [ConfirmationService, TaskListPageStateService],
   templateUrl: './task-list-page.component.html',
   styleUrl: './task-list-page.component.scss'
@@ -156,8 +157,21 @@ export class TaskListPageComponent implements OnInit {
     return {
       name: value.name?.trim() || undefined,
       priority: value.priority || undefined,
-      status: value.status || undefined
+      status: value.status || undefined,
+      createdFrom: this.toDateParam(value.createdFrom),
+      createdTo: this.toDateParam(value.createdTo),
     };
   }
 
+  private toDateParam(date: Date | null): string | undefined {
+    if (!date) {
+      return undefined;
+    }
+
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const day = `${date.getDate()}`.padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
 }
