@@ -9,6 +9,8 @@ import {
   UpdateTaskRequest
 } from '../models/task.model';
 import { DictionaryOption } from '../models/dictionary-option.model';
+import { TaskPriority } from '../models/task-priority.model';
+import { TaskStatus } from '../models/task-status.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +33,7 @@ export class TaskApiService {
   }
 
   createTask(request: CreateTaskRequest): Observable<Task> {
-    return this.http.post<Task>(`${this.apiUrl}/tasks/`, request);
+    return this.http.post<Task>(`${this.apiUrl}/tasks`, request);
   }
 
   updateTaskPartially(id: number, request: UpdateTaskRequest): Observable<Task> {
@@ -46,15 +48,15 @@ export class TaskApiService {
     return this.http.delete<void>(`${this.apiUrl}/tasks/${id}`);
   }
 
-  getPriorities(): Observable<DictionaryOption<string>[]> {
-  return this.http.get<DictionaryOption<string>[]>(
-    `${this.apiUrl}/dictionary/priorities`
-  );
-}
+  getPriorities(): Observable<DictionaryOption<TaskPriority>[]> {
+    return this.http.get<DictionaryOption<TaskPriority>[]>(
+      `${this.apiUrl}/dictionary/priorities`
+    );
+  }
 
-getStatuses(): Observable<DictionaryOption<string>[]> {
-  return this.http.get<DictionaryOption<string>[]>(
-    `${this.apiUrl}/dictionary/statuses`
-  );
-}
+  getStatuses(): Observable<DictionaryOption<TaskStatus>[]> {
+    return this.http.get<DictionaryOption<TaskStatus>[]>(
+      `${this.apiUrl}/dictionary/statuses`
+    );
+  }
 }

@@ -1,3 +1,4 @@
+import { FormControl } from '@angular/forms';
 import { TaskPriority } from './task-priority.model';
 import { TaskStatus } from './task-status.model';
 
@@ -15,7 +16,6 @@ export interface CreateTaskRequest {
   name: string;
   description: string | null;
   priority: TaskPriority;
-  status: TaskStatus;
 }
 
 export interface UpdateTaskRequest {
@@ -31,4 +31,10 @@ export interface PageResponse<T> {
   totalPages: number;
   size: number;
   number: number;
+}
+
+export type TaskFormControls = {
+  name: FormControl<string | null>;
+  description: FormControl<string | null>;
+  priority: FormControl<TaskPriority | null>;
 }

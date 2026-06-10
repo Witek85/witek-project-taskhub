@@ -11,8 +11,10 @@ import { TextareaModule } from 'primeng/textarea';
 import { TaskApiService } from '../../api/task-api.service';
 import { DictionaryOption } from '../../models/dictionary-option.model';
 import { TaskPriority } from '../../models/task-priority.model';
-import { TaskStatus } from '../../models/task-status.model';
 import { FluidModule } from 'primeng/fluid';
+import { TaskAddPageStateService } from './task-add-page-state-service';
+import { TaskFormControls } from '../../models/task.model';
+import { FormControlErrorStateDirective } from '../../../../shared/directives/form-control-error-state.directive';
 
 @Component({
   standalone: true,
@@ -24,41 +26,85 @@ import { FluidModule } from 'primeng/fluid';
     TextareaModule,
     SelectModule,
     ButtonModule,
-    FluidModule
+    FluidModule,
+    FormControlErrorStateDirective
   ],
+  providers: [TaskAddPageStateService],
   templateUrl: './task-add-page.component.html',
   styleUrl: './task-add-page.component.scss'
 })
 export class TaskAddPageComponent implements OnInit {
-  private readonly fb = inject(NonNullableFormBuilder);
   private readonly taskApi = inject(TaskApiService);
   private readonly router = inject(Router);
 
+  public readonly taskAddPageStateService: TaskAddPageStateService = inject(TaskAddPageStateService);
+
   priorities = signal<DictionaryOption<TaskPriority>[]>([]);
-  statuses = signal<DictionaryOption<TaskStatus>[]>([]);
   // saving = signal(false);
 
-  // form = this.fb.group({
-  //   name: this.fb.control('', {
-  //     validators: [Validators.required, Validators.maxLength(120)]
-  //   }),
-  //   description: this.fb.control<string | null>(null),
-  //   priority: this.fb.control<TaskPriority | null>(null, {
-  //     validators: [Validators.required]
-  //   }),
-  //   status: this.fb.control<TaskStatus | null>(null, {
-  //     validators: [Validators.required]
-  //   })
-  // });
+  public ngOnInit(): void {
+    this.getPriorities();
+  }
+  
+  public onClear(): void {
+    this.taskAddPageStateService.taskForm.reset();
+  }
+  
+  public onSubmit(): void {
+    const form = this.taskAddPageStateService.taskForm;
 
-  ngOnInit(): void {
+    console.log('form', form, form.invalid);
+
+    if (form.invalid) {
+      form.markAllAsTouched();
+      form.updateValueAndValidity();
+
+      return;
+    }
+
+
+
+    this.createTask();
+  }
+
+  public isInvalid(controlName: keyof TaskFormControls): boolean {
+    const control = this.taskAddPageStateService.taskForm.controls[controlName];
+    return control.invalid && (control.touched || control.dirty);
+  }
+
+  private getPriorities(): void {
     this.taskApi.getPriorities().subscribe((res) => {
-      console.log(res)
+      this.priorities.set(res);
     });
+  }
 
-    this.taskApi.getStatuses().subscribe((res) => {
-      console.log(res)
+  private createTask(): void {
+
+    const value = this.taskAddPageStateService.taskForm.getRawValue();
+
+    if (!value.name || !value.priority) {
+      return;
+    }
+
+    this.taskApi.createTask({
+      name: value.name,
+      description: value.description,
+      priority: value.priority,
+    }).subscribe({
+      next: task => {
+        // this.saving.set(false);
+        alert('ok')
+      },
+      error: () => {
+        // this.saving.set(false);
+        alert('error')
+      }
     });
+  }
+
+  private markFormAsTouched(): void {
+    this.taskAddPageStateService.taskForm.markAllAsTouched();
+    this.taskAddPageStateService.taskForm.updateValueAndValidity();
   }
 
   // submit(): void {

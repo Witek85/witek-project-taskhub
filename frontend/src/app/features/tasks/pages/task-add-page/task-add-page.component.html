@@ -1,4 +1,61 @@
 <div class="card">
-    <div class="font-semibold text-xl mb-4">Empty Page</div>
-    <p>Use this page to start from scratch and place your custom content.</p>
+    <div class="font-semibold text-xl mb-4">
+        Add task
+    </div>
+    <div class="md:w-1/2">
+        <form [formGroup]="taskAddPageStateService.taskForm">
+            <div class="flex flex-col gap-4">
+                <div class="flex flex-col gap-2">
+                    <label>Name</label>
+                    <input 
+                    pInputText 
+                    type="text" 
+                    [formControl]="taskAddPageStateService.taskForm.controls.name" 
+                    appFormControlErrorState
+                    />
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label>Description</label>
+                    <input 
+                        pInputText 
+                        type="text" 
+                        [formControl]="taskAddPageStateService.taskForm.controls.description" 
+                        appFormControlErrorState
+                    />
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label>Priority</label>
+                    <p-select 
+                        [formControl]="taskAddPageStateService.taskForm.controls.priority" 
+                        [options]="priorities()" 
+                        optionLabel="label" 
+                        optionValue="value" 
+                        placeholder="Select" 
+                        appFormControlErrorState
+                    />
+                </div>
+            </div>
+            <div class="flex justify-between mt-4">
+                <div>
+                    <!-- TODO miejsce na przyszłość -->
+                </div>
+                <div class="flex gap-2">
+                    <p-button
+                        type="button"
+                        label="Clear"
+                        severity="secondary"
+                        icon="pi pi-times"
+                        (onClick)="onClear()">
+                    </p-button>
+
+                    <p-button
+                        type="submit"
+                        label="Submit"
+                        icon="pi pi-check"
+                        (onClick)="onSubmit()">
+                    </p-button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
