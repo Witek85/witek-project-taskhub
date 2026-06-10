@@ -36,11 +36,11 @@ export class TaskApiService {
     return this.http.post<Task>(`${this.apiUrl}/tasks`, request);
   }
 
-  updateTaskPartially(id: number, request: UpdateTaskRequest): Observable<Task> {
+  updateTaskPartially(id: number, request: Partial<UpdateTaskRequest>): Observable<Task> {
     return this.http.patch<Task>(`${this.apiUrl}/tasks/${id}`, request);
   }
 
-  updateTask(id: number, request: CreateTaskRequest): Observable<Task> {
+  updateTask(id: number, request: UpdateTaskRequest): Observable<Task> {
     return this.http.put<Task>(`${this.apiUrl}/tasks/${id}`, request);
   }
 

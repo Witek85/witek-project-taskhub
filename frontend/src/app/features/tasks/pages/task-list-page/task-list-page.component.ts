@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { TableModule } from 'primeng/table';
@@ -12,6 +12,7 @@ import { Task } from '../../models/task.model';
 import { LoaderService } from '../../../../core/loader/loader.service';
 import { ConfirmationService } from 'primeng/api';
 import { finalize } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-task-list-page',
@@ -24,6 +25,7 @@ export class TaskListPageComponent implements OnInit {
   tasks = signal<Task[]>([]);
   loading = signal(false);
 
+  private readonly destroyRef: DestroyRef = inject(DestroyRef);
   private readonly loaderService = inject(LoaderService);
   private readonly taskApi = inject(TaskApiService);
   private readonly router = inject(Router);
@@ -36,7 +38,11 @@ export class TaskListPageComponent implements OnInit {
   public loadTasks(): void {
     this.loading.set(true);
 
-    this.taskApi.getTasks().subscribe({
+    this.taskApi.getTasks()
+    .pipe(
+      takeUntilDestroyed(this.destroyRef),
+    )
+    .subscribe({
       next: response => {
         this.tasks.set(response.content);
         this.loading.set(false);
@@ -53,7 +59,7 @@ export class TaskListPageComponent implements OnInit {
 
   public editTask(event: Event, taskId: number): void {
     event.stopPropagation();
-    console.log('editTask', taskId);
+    this.router.navigate(['/tasks', taskId, 'edit']);
   }
 
   public onDeleteTask(event: Event, taskId: number): void {
@@ -83,9 +89,12 @@ export class TaskListPageComponent implements OnInit {
     this.loaderService.startLoading();
 
     this.taskApi.deleteTask(taskId)
-      .pipe(finalize(() => {
-        this.loaderService.completeLoading();
-      }))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.loaderService.completeLoading();
+        })
+      )
       .subscribe({
         next: () => {
           this.loadTasks();

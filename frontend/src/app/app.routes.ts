@@ -21,7 +21,19 @@ export const routes: Routes = [
         path: 'tasks/add',
         loadComponent: () =>
           import('./features/tasks/pages/task-add-page/task-add-page.component')
-            .then(m => m.TaskAddPageComponent)
+            .then(m => m.TaskAddPageComponent),
+        data: {
+          mode: 'add'
+        }
+      },
+      {
+        path: 'tasks/:id/edit',
+        loadComponent: () =>
+          import('./features/tasks/pages/task-add-page/task-add-page.component')
+            .then(m => m.TaskAddPageComponent),
+        data: {
+          mode: 'edit'
+        }
       },
       {
         path: 'tasks/:id',

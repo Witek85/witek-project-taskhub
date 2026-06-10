@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { TaskFormControls } from "../../models/task.model";
+import { Task, TaskFormControls } from "../../models/task.model";
 import { TaskPriority } from "../../models/task-priority.model";
 
 @Injectable()
@@ -15,5 +15,13 @@ export class TaskAddPageStateService {
     description: new FormControl<string | null>(null, [Validators.required]),
     priority: new FormControl<TaskPriority | null>(null, [Validators.required])
   })
+
+  public updateForm(task: Task): void {
+    this.taskForm.patchValue({
+      name: task.name,
+      description: task.description,
+      priority: task.priority,
+    }, {emitEvent: false})
+  }
 
 }
