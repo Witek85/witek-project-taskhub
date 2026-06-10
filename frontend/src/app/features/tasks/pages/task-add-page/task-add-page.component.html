@@ -59,3 +59,11 @@
         </form>
     </div>
 </div>
+<p-dialog header="Dialog" [visible]="showDialog()" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '30vw' }" [modal]="true">
+    <p class="leading-normal m-0">
+        {{ dialogMessage() }}
+    </p>
+    <ng-template #footer>
+        <p-button label="Ok" (click)="onClose()" />
+    </ng-template>
+</p-dialog>

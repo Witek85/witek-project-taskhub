@@ -7,6 +7,7 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
+import { DialogModule } from 'primeng/dialog';
 
 import { TaskApiService } from '../../api/task-api.service';
 import { DictionaryOption } from '../../models/dictionary-option.model';
@@ -27,7 +28,8 @@ import { FormControlErrorStateDirective } from '../../../../shared/directives/fo
     SelectModule,
     ButtonModule,
     FluidModule,
-    FormControlErrorStateDirective
+    FormControlErrorStateDirective,
+    DialogModule
   ],
   providers: [TaskAddPageStateService],
   templateUrl: './task-add-page.component.html',
@@ -39,8 +41,9 @@ export class TaskAddPageComponent implements OnInit {
 
   public readonly taskAddPageStateService: TaskAddPageStateService = inject(TaskAddPageStateService);
 
-  priorities = signal<DictionaryOption<TaskPriority>[]>([]);
-  // saving = signal(false);
+  public priorities = signal<DictionaryOption<TaskPriority>[]>([]);
+  public showDialog = signal<boolean>(false);
+  public dialogMessage = signal<string>('');
 
   public ngOnInit(): void {
     this.getPriorities();
@@ -49,20 +52,19 @@ export class TaskAddPageComponent implements OnInit {
   public onClear(): void {
     this.taskAddPageStateService.taskForm.reset();
   }
+
+  public onClose(): void {
+    this.showDialog.set(false);
+    this.dialogMessage.set('')
+  }
   
   public onSubmit(): void {
     const form = this.taskAddPageStateService.taskForm;
-
-    console.log('form', form, form.invalid);
-
     if (form.invalid) {
       form.markAllAsTouched();
       form.updateValueAndValidity();
-
       return;
     }
-
-
 
     this.createTask();
   }
@@ -79,7 +81,6 @@ export class TaskAddPageComponent implements OnInit {
   }
 
   private createTask(): void {
-
     const value = this.taskAddPageStateService.taskForm.getRawValue();
 
     if (!value.name || !value.priority) {
@@ -92,54 +93,13 @@ export class TaskAddPageComponent implements OnInit {
       priority: value.priority,
     }).subscribe({
       next: task => {
-        // this.saving.set(false);
-        alert('ok')
+        this.showDialog.set(true);
+        this.dialogMessage.set('Task has been succesfully created');
+        this.onClear();
       },
-      error: () => {
-        // this.saving.set(false);
-        alert('error')
+      error: (err) => {
+        console.log('error', err)
       }
     });
   }
-
-  private markFormAsTouched(): void {
-    this.taskAddPageStateService.taskForm.markAllAsTouched();
-    this.taskAddPageStateService.taskForm.updateValueAndValidity();
-  }
-
-  // submit(): void {
-  //   this.form.markAllAsTouched();
-
-  //   if (this.form.invalid) {
-  //     return;
-  //   }
-
-  //   const value = this.form.getRawValue();
-
-  //   this.saving.set(true);
-
-  //   this.taskApi.createTask({
-  //     name: value.name,
-  //     description: value.description,
-  //     priority: value.priority!,
-  //     status: value.status!
-  //   }).subscribe({
-  //     next: task => {
-  //       this.saving.set(false);
-  //       this.router.navigate(['/tasks', task.id]);
-  //     },
-  //     error: () => {
-  //       this.saving.set(false);
-  //     }
-  //   });
-  // }
-
-  // cancel(): void {
-  //   this.router.navigate(['/tasks']);
-  // }
-
-  // isInvalid(controlName: keyof typeof this.form.controls): boolean {
-  //   const control = this.form.controls[controlName];
-  //   return control.invalid && (control.touched || control.dirty);
-  // }
 }
