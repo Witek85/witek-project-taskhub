@@ -13,7 +13,7 @@ import pl.witold.taskhub.task.dto.ReplaceTaskRequest;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import pl.witold.taskhub.task.dto.TaskSearchRequest;
 
@@ -37,8 +37,8 @@ public class TaskController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) TaskPriority priority,
             @RequestParam(required = false) TaskStatus status,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime createdFrom,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime createdTo,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdTo,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     ) {
         TaskSearchRequest request = new TaskSearchRequest(

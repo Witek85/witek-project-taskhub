@@ -15,8 +15,8 @@ public class TaskSpecification {
                 nameContains(request.name()),
                 priorityEquals(request.priority()),
                 statusEquals(request.status()),
-                createdFrom(toStartOfDay(request.createdFrom())),
-                createdTo(toStartOfNextDay(request.createdTo()))
+                createdFrom(request.createdFrom() == null ? null : request.createdFrom().atStartOfDay()),
+                createdTo(request.createdTo() == null ? null : request.createdTo().plusDays(1).atStartOfDay())
         );
     }
 
@@ -71,21 +71,5 @@ public class TaskSpecification {
 
             return criteriaBuilder.lessThan(root.get("createdAt"), createdToExclusive);
         };
-    }
-
-    private static LocalDateTime toStartOfDay(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-
-        return dateTime.toLocalDate().atStartOfDay();
-    }
-
-    private static LocalDateTime toStartOfNextDay(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-
-        return dateTime.toLocalDate().plusDays(1).atStartOfDay();
     }
 }
