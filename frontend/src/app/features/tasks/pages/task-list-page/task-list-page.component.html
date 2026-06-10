@@ -104,7 +104,7 @@
       <td>
         <p-tag [value]="task.status"></p-tag>
       </td>
-      <td>{{ task.createdAt }}</td>
+      <td>{{ task.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
       <td class="w-32">
         <div class="flex justify-end gap-2">
           <p-button

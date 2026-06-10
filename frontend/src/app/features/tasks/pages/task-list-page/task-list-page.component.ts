@@ -21,10 +21,11 @@ import { TaskStatus } from '../../models/task-status.model';
 import { DictionaryOption } from '../../models/dictionary-option.model';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-task-list-page',
-  imports: [TableModule, ButtonModule, TagModule, ConfirmDialogModule, ReactiveFormsModule, InputTextModule, SelectModule, DatePickerModule],
+  imports: [TableModule, ButtonModule, TagModule, ConfirmDialogModule, ReactiveFormsModule, InputTextModule, SelectModule, DatePickerModule, DatePipe],
   providers: [ConfirmationService, TaskListPageStateService],
   templateUrl: './task-list-page.component.html',
   styleUrl: './task-list-page.component.scss'
