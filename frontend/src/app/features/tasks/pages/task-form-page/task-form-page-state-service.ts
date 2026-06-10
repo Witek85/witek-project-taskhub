@@ -11,8 +11,8 @@ export class TaskFormPageStateService {
   }
 
   private _taskForm: FormGroup<TaskFormControls> = new FormGroup({
-    name: new FormControl<string | null>(null, [Validators.required]),
-    description: new FormControl<string | null>(null, [Validators.required]),
+    name: new FormControl<string | null>(null, [Validators.required, Validators.maxLength(255)]),
+    description: new FormControl<string | null>(null, [Validators.maxLength(2000)]),
     priority: new FormControl<TaskPriority | null>(null, [Validators.required])
   })
 
