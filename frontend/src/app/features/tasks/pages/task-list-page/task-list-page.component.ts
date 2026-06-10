@@ -23,11 +23,11 @@ export class TaskListPageComponent implements OnInit {
     private readonly router: Router
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.loadTasks();
   }
 
-  loadTasks(): void {
+  public loadTasks(): void {
     this.loading.set(true);
 
     this.taskApi.getTasks().subscribe({
@@ -41,7 +41,17 @@ export class TaskListPageComponent implements OnInit {
     });
   }
 
-  openTask(task: Task): void {
+  public openTask(task: Task): void {
     this.router.navigate(['/tasks', task.id]);
+  }
+
+  public editTask(event: Event, taskId: number): void {
+    event.stopPropagation();
+    console.log('editTask', taskId);
+  }
+
+  public deleteTask(event: Event, taskId: number): void {
+    event.stopPropagation();
+    console.log('deleteTask', taskId);
   }
 }
