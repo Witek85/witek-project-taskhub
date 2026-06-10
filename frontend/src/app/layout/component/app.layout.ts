@@ -5,11 +5,13 @@ import { AppTopbar } from './app.topbar';
 import { AppSidebar } from './app.sidebar';
 import { AppFooter } from './app.footer';
 import { LayoutService } from '../service/layout.service';
+import { LoaderService } from '../../core/loader/loader.service';
+import { LoaderComponent } from '../../core/loader/loader.component';
 
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter],
+    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter, LoaderComponent],
     template: `<div class="layout-wrapper" [ngClass]="containerClass()">
         <app-topbar></app-topbar>
         <app-sidebar></app-sidebar>
@@ -20,10 +22,13 @@ import { LayoutService } from '../service/layout.service';
             <app-footer></app-footer>
         </div>
         <div class="layout-mask"></div>
-    </div> `
+    </div>
+    <ws-loader></ws-loader>
+     `
 })
 export class AppLayout {
     layoutService = inject(LayoutService);
+    loaderService = inject(LoaderService);
 
     constructor() {
         effect(() => {
