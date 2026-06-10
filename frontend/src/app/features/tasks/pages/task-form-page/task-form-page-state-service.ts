@@ -4,7 +4,7 @@ import { Task, TaskFormControls } from "../../models/task.model";
 import { TaskPriority } from "../../models/task-priority.model";
 
 @Injectable()
-export class TaskAddPageStateService {
+export class TaskFormPageStateService {
 
   public get taskForm(): FormGroup<TaskFormControls> {
     return this._taskForm;

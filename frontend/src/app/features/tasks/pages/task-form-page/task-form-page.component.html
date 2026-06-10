@@ -3,14 +3,14 @@
         Add task
     </div>
     <div class="md:w-1/2">
-        <form [formGroup]="taskAddPageStateService.taskForm">
+        <form [formGroup]="TaskFormPageStateService.taskForm">
             <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
                     <label>Name</label>
                     <input 
                     pInputText 
                     type="text" 
-                    [formControl]="taskAddPageStateService.taskForm.controls.name" 
+                    [formControl]="TaskFormPageStateService.taskForm.controls.name" 
                     appFormControlErrorState
                     />
                 </div>
@@ -19,14 +19,14 @@
                     <input 
                         pInputText 
                         type="text" 
-                        [formControl]="taskAddPageStateService.taskForm.controls.description" 
+                        [formControl]="TaskFormPageStateService.taskForm.controls.description" 
                         appFormControlErrorState
                     />
                 </div>
                 <div class="flex flex-col gap-2">
                     <label>Priority</label>
                     <p-select 
-                        [formControl]="taskAddPageStateService.taskForm.controls.priority" 
+                        [formControl]="TaskFormPageStateService.taskForm.controls.priority" 
                         [options]="priorities()" 
                         optionLabel="label" 
                         optionValue="value" 

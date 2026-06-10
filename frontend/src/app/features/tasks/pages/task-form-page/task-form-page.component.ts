@@ -14,7 +14,7 @@ import { TaskApiService } from '../../api/task-api.service';
 import { DictionaryOption } from '../../models/dictionary-option.model';
 import { TaskPriority } from '../../models/task-priority.model';
 import { FluidModule } from 'primeng/fluid';
-import { TaskAddPageStateService } from './task-add-page-state-service';
+import { TaskFormPageStateService } from './task-form-page-state-service';
 import { Task, TaskFormControls } from '../../models/task.model';
 import { FormControlErrorStateDirective } from '../../../../shared/directives/form-control-error-state.directive';
 import { LoaderService } from '../../../../core/loader/loader.service';
@@ -22,7 +22,7 @@ import { finalize } from 'rxjs';
 
 @Component({
   standalone: true,
-  selector: 'ws-task-add',
+  selector: 'ws-task-form',
   imports: [
     ReactiveFormsModule,
     CardModule,
@@ -34,16 +34,16 @@ import { finalize } from 'rxjs';
     FormControlErrorStateDirective,
     DialogModule
   ],
-  providers: [TaskAddPageStateService],
-  templateUrl: './task-add-page.component.html',
-  styleUrl: './task-add-page.component.scss'
+  providers: [TaskFormPageStateService],
+  templateUrl: './task-form-page.component.html',
+  styleUrl: './task-form-page.component.scss'
 })
-export class TaskAddPageComponent implements OnInit {
+export class TaskFormPageComponent implements OnInit {
   private readonly taskApi = inject(TaskApiService);
   private readonly route = inject(ActivatedRoute);
 
-  public readonly destroyRef: DestroyRef = inject(DestroyRef);
-  public readonly taskAddPageStateService: TaskAddPageStateService = inject(TaskAddPageStateService);
+  public readonly TaskFormPageStateService: TaskFormPageStateService = inject(TaskFormPageStateService);
+  private readonly destroyRef: DestroyRef = inject(DestroyRef);
   private readonly loaderService = inject(LoaderService);
 
   public priorities = signal<DictionaryOption<TaskPriority>[]>([]);
@@ -67,7 +67,7 @@ export class TaskAddPageComponent implements OnInit {
   }
   
   public onClear(): void {
-    this.taskAddPageStateService.taskForm.reset();
+    this.TaskFormPageStateService.taskForm.reset();
   }
 
   public onClose(): void {
@@ -76,7 +76,7 @@ export class TaskAddPageComponent implements OnInit {
   }
   
   public onSubmit(): void {
-    const form = this.taskAddPageStateService.taskForm;
+    const form = this.TaskFormPageStateService.taskForm;
     if (form.invalid) {
       form.markAllAsTouched();
       form.updateValueAndValidity();
@@ -91,12 +91,16 @@ export class TaskAddPageComponent implements OnInit {
   }
 
   public isInvalid(controlName: keyof TaskFormControls): boolean {
-    const control = this.taskAddPageStateService.taskForm.controls[controlName];
+    const control = this.TaskFormPageStateService.taskForm.controls[controlName];
     return control.invalid && (control.touched || control.dirty);
   }
 
   private getPriorities(): void {
-    this.taskApi.getPriorities().subscribe((res) => {
+    this.taskApi.getPriorities()
+    .pipe(
+      takeUntilDestroyed(this.destroyRef),
+    )
+    .subscribe((res) => {
       this.priorities.set(res);
     });
   }
@@ -113,7 +117,7 @@ export class TaskAddPageComponent implements OnInit {
     .subscribe({
       next: task => {
         this.task = task;
-        this.taskAddPageStateService.updateForm(task);
+        this.TaskFormPageStateService.updateForm(task);
       },
       error: (err) => {
         console.log('error, err');
@@ -122,7 +126,7 @@ export class TaskAddPageComponent implements OnInit {
   }
 
   private createTask(): void {
-    const value = this.taskAddPageStateService.taskForm.getRawValue();
+    const value = this.TaskFormPageStateService.taskForm.getRawValue();
 
     if (!value.name || !value.priority) {
       return;
@@ -153,7 +157,7 @@ export class TaskAddPageComponent implements OnInit {
   }
 
   private updateTask(): void {
-    const value = this.taskAddPageStateService.taskForm.getRawValue();
+    const value = this.TaskFormPageStateService.taskForm.getRawValue();
 
     if (!value.name || !value.priority) {
       return;

@@ -20,8 +20,8 @@ export const routes: Routes = [
       {
         path: 'tasks/add',
         loadComponent: () =>
-          import('./features/tasks/pages/task-add-page/task-add-page.component')
-            .then(m => m.TaskAddPageComponent),
+          import('./features/tasks/pages/task-form-page/task-form-page.component')
+            .then(m => m.TaskFormPageComponent),
         data: {
           mode: 'add'
         }
@@ -29,8 +29,8 @@ export const routes: Routes = [
       {
         path: 'tasks/:id/edit',
         loadComponent: () =>
-          import('./features/tasks/pages/task-add-page/task-add-page.component')
-            .then(m => m.TaskAddPageComponent),
+          import('./features/tasks/pages/task-form-page/task-form-page.component')
+            .then(m => m.TaskFormPageComponent),
         data: {
           mode: 'edit'
         }
