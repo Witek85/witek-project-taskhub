@@ -7,17 +7,17 @@ import pl.witold.taskhub.task.TaskPriority;
 import pl.witold.taskhub.task.TaskStatus;
 
 public record ReplaceTaskRequest(
-        @NotBlank
+        @NotBlank(message = "Name is required")
         @Size(max = 255)
         String name,
 
         @Size(max = 2000)
         String description,
 
-        @NotNull
+        @NotNull(message = "Priority is required")
         TaskPriority priority,
 
-        @NotNull
+        @NotNull(message = "Status is required")
         TaskStatus status
 ) {
 }

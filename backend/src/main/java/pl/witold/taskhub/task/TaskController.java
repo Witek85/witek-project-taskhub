@@ -59,7 +59,7 @@ public class TaskController {
     @PatchMapping("/{id}")
     public TaskResponse patchTask(
             @PathVariable Long id,
-            @RequestBody UpdateTaskRequest request
+            @Valid @RequestBody UpdateTaskRequest request
     ) {
         return taskService.update(id, request);
     }
