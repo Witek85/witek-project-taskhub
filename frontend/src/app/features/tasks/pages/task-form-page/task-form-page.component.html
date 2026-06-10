@@ -1,6 +1,6 @@
 <div class="card">
     <div class="font-semibold text-xl mb-4">
-        Add task
+        {{ editMode() ? "Edit task" : "Add task"}}
     </div>
     <div class="md:w-1/2">
         <form [formGroup]="TaskFormPageStateService.taskForm">
@@ -41,6 +41,7 @@
                 </div>
                 <div class="flex gap-2">
                     <p-button
+                        [disabled]="editMode()"
                         type="button"
                         label="Clear"
                         severity="secondary"
