@@ -55,7 +55,6 @@ export class TaskFormPageComponent implements OnInit {
 
   public ngOnInit(): void {
     const mode = this.route.snapshot.data['mode'];
-    console.log('mode', mode);
 
     if (mode === 'edit') {
       this.editMode.set(true);

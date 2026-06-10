@@ -6,6 +6,7 @@ import {
   CreateTaskRequest,
   PageResponse,
   Task,
+  TaskSearchCriteria,
   UpdateTaskRequest
 } from '../models/task.model';
 import { DictionaryOption } from '../models/dictionary-option.model';
@@ -20,10 +21,22 @@ export class TaskApiService {
 
   constructor(private readonly http: HttpClient) {}
 
-  getTasks(page = 0, size = 10): Observable<PageResponse<Task>> {
-    const params = new HttpParams()
+  getTasks(criteria: TaskSearchCriteria = {}, page = 0, size = 10): Observable<PageResponse<Task>> {
+    let params = new HttpParams()
       .set('page', page)
       .set('size', size);
+
+    if (criteria.name) {
+      params = params.set('name', criteria.name);
+    }
+
+    if (criteria.priority) {
+      params = params.set('priority', criteria.priority);
+    }
+
+    if (criteria.status) {
+      params = params.set('status', criteria.status);
+    }
 
     return this.http.get<PageResponse<Task>>(`${this.apiUrl}/tasks`, { params });
   }

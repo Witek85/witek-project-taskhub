@@ -33,8 +33,20 @@ export interface PageResponse<T> {
   number: number;
 }
 
+export interface TaskSearchCriteria {
+  name?: string;
+  priority?: TaskPriority;
+  status?: TaskStatus;
+}
+
 export type TaskFormControls = {
   name: FormControl<string | null>;
   description: FormControl<string | null>;
   priority: FormControl<TaskPriority | null>;
+}
+
+export type TaskFilterFormControls = {
+  name: FormControl<string | null>;
+  priority: FormControl<TaskPriority | null>;
+  status: FormControl<TaskStatus | null>;
 }
