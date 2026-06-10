@@ -3,10 +3,7 @@ package pl.witold.taskhub.task;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import pl.witold.taskhub.task.dto.CreateTaskRequest;
-import pl.witold.taskhub.task.dto.TaskResponse;
-import pl.witold.taskhub.task.dto.UpdateTaskRequest;
-import pl.witold.taskhub.task.dto.ReplaceTaskRequest;
+import pl.witold.taskhub.task.dto.*;
 
 @Service
 public class TaskService {
@@ -29,8 +26,8 @@ public class TaskService {
         return toResponse(savedTask);
     }
 
-    public Page<TaskResponse> getAll(Pageable pageable) {
-        return taskRepository.findAll(pageable)
+    public Page<TaskResponse> getAll(TaskSearchRequest request, Pageable pageable) {
+        return taskRepository.findAll(TaskSpecification.withFilters(request), pageable)
                 .map(this::toResponse);
     }
 
