@@ -22,6 +22,7 @@ import { DictionaryOption } from '../../models/dictionary-option.model';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { DatePipe } from '@angular/common';
+import { TableLazyLoadEvent } from 'primeng/table';
 
 @Component({
   selector: 'app-task-list-page',
@@ -45,27 +46,41 @@ export class TaskListPageComponent implements OnInit {
   private readonly confirmationService = inject(ConfirmationService);
 
   public ngOnInit(): void {
-    this.loadTasks();
     this.getPriorities();
     this.getStatuses();
   }
 
   public onClear(): void {
-    this.taskListPageStateService.taskFilterForm.reset();
+    this.taskListPageStateService.taskFilterForm.reset({
+      name: null,
+      priority: null,
+      status: null,
+      createdFrom: null,
+      createdTo: null
+    });
+
     this.searchCriteria.set({});
-    this.loadTasks();
+    this.taskListPageStateService.resetPagination();
+
+    this.loadTasks(0, this.taskListPageStateService.size());
   }
   
   public onSubmit(): void {
     const criteria = this.buildSearchCriteria();
+
     this.searchCriteria.set(criteria);
-    this.loadTasks();
+    this.taskListPageStateService.resetPagination();
+
+    this.loadTasks(0, this.taskListPageStateService.size());
   }
 
-  public loadTasks(page = 0, size = 10): void {
-    this.loading.set(true);
+  public loadTasks(
+    page = this.taskListPageStateService.page(),
+    size = this.taskListPageStateService.size()
+  ): void {
+  this.loading.set(true);
 
-    this.taskApi.getTasks(this.searchCriteria(), page, size)
+  this.taskApi.getTasks(this.searchCriteria(), page, size)
     .pipe(
       takeUntilDestroyed(this.destroyRef),
       finalize(() => this.loading.set(false))
@@ -73,11 +88,29 @@ export class TaskListPageComponent implements OnInit {
     .subscribe({
       next: response => {
         this.tasks.set(response.content);
+
+        this.taskListPageStateService.setPageData(
+          response.totalElements,
+          response.totalPages,
+          response.number,
+          response.size
+        );
       },
       error: err => {
         console.log('error', err);
       }
     });
+  }
+
+  public onLazyLoadTasks(event: TableLazyLoadEvent): void {
+    const first = event.first ?? 0;
+    const rows = event.rows ?? this.taskListPageStateService.size();
+
+    const page = Math.floor(first / rows);
+    const size = rows;
+
+    this.scrollToTop();
+    this.loadTasks(page, size);
   }
 
   public openTask(task: Task): void {
@@ -174,5 +207,12 @@ export class TaskListPageComponent implements OnInit {
     const day = `${date.getDate()}`.padStart(2, '0');
 
     return `${year}-${month}-${day}`;
+  }
+
+  private scrollToTop(): void {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   }
 }

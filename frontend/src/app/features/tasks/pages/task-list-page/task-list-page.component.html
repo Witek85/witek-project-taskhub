@@ -80,8 +80,13 @@
 <p-table
   [value]="tasks()"
   [loading]="loading()"
+  [lazy]="true"
+  [paginator]="true"
+  [rows]="taskListPageStateService.size()"
+  [totalRecords]="taskListPageStateService.totalElements()"
   dataKey="id"
   styleClass="p-datatable-gridlines"
+  (onLazyLoad)="onLazyLoadTasks($event)"
 >
   <ng-template pTemplate="header">
     <tr>
