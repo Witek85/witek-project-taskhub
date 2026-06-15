@@ -61,6 +61,7 @@ export class TaskListPageComponent implements OnInit {
 
     this.searchCriteria.set({});
     this.taskListPageStateService.resetPagination();
+    this.taskListPageStateService.resetSort();
 
     this.loadTasks(0, this.taskListPageStateService.size());
   }
@@ -70,6 +71,7 @@ export class TaskListPageComponent implements OnInit {
 
     this.searchCriteria.set(criteria);
     this.taskListPageStateService.resetPagination();
+    this.taskListPageStateService.resetSort();
 
     this.loadTasks(0, this.taskListPageStateService.size());
   }
@@ -80,7 +82,7 @@ export class TaskListPageComponent implements OnInit {
   ): void {
   this.loading.set(true);
 
-  this.taskApi.getTasks(this.searchCriteria(), page, size)
+  this.taskApi.getTasks(this.searchCriteria(), page, size,  this.buildSortParam())
     .pipe(
       takeUntilDestroyed(this.destroyRef),
       finalize(() => this.loading.set(false))
@@ -108,6 +110,15 @@ export class TaskListPageComponent implements OnInit {
 
     const page = Math.floor(first / rows);
     const size = rows;
+
+    const sortField =
+      typeof event.sortField === 'string'
+        ? event.sortField
+        : this.taskListPageStateService.sortField();
+
+    const sortOrder = event.sortOrder ?? this.taskListPageStateService.sortOrder();
+
+    this.taskListPageStateService.setSort(sortField, sortOrder);
 
     this.scrollToTop();
     this.loadTasks(page, size);
@@ -195,6 +206,13 @@ export class TaskListPageComponent implements OnInit {
       createdFrom: this.toDateParam(value.createdFrom),
       createdTo: this.toDateParam(value.createdTo),
     };
+  }
+
+  private buildSortParam(): string {
+    const field = this.taskListPageStateService.sortField();
+    const direction = this.taskListPageStateService.sortOrder() === 1 ? 'asc' : 'desc';
+
+    return `${field},${direction}`;
   }
 
   private toDateParam(date: Date | null): string | undefined {

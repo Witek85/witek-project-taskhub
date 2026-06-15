@@ -86,15 +86,23 @@
   [totalRecords]="taskListPageStateService.totalElements()"
   dataKey="id"
   styleClass="p-datatable-gridlines"
+  [sortField]="taskListPageStateService.sortField()"
+  [sortOrder]="taskListPageStateService.sortOrder()"
   (onLazyLoad)="onLazyLoadTasks($event)"
 >
   <ng-template pTemplate="header">
     <tr>
-      <th>ID</th>
-      <th>Name</th>
+      <th pSortableColumn="id">
+        ID <p-sortIcon field="id" />
+      </th>
+      <th pSortableColumn="name">
+        Name <p-sortIcon field="name" />
+      </th>
       <th>Priority</th>
       <th>Status</th>
-      <th>Created</th>
+      <th pSortableColumn="createdAt">
+        Created <p-sortIcon field="createdAt" />
+      </th>
       <th></th>
     </tr>
   </ng-template>

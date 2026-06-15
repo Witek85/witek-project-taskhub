@@ -6,11 +6,12 @@ import { TaskStatus } from "../../models/task-status.model";
 
 @Injectable()
 export class TaskListPageStateService {
-
   public readonly page: WritableSignal<number> = signal(0);
   public readonly size: WritableSignal<number> = signal(10);
   public readonly totalElements: WritableSignal<number> = signal(0);
   public readonly totalPages: WritableSignal<number> = signal(0);
+  public readonly sortField: WritableSignal<string> = signal('createdAt');
+  public readonly sortOrder: WritableSignal<number> = signal(-1);
   
   public get taskFilterForm(): FormGroup<TaskFilterFormControls> {
     return this._taskFilterForm;
@@ -23,8 +24,18 @@ export class TaskListPageStateService {
     this.size.set(size);
   }
 
+  public setSort(field: string, order: number): void {
+    this.sortField.set(field);
+    this.sortOrder.set(order);
+  }
+
   public resetPagination(): void {
     this.page.set(0);
+  }
+
+  public resetSort(): void {
+    this.sortField.set('createdAt');
+    this.sortOrder.set(-1);
   }
 
   private _taskFilterForm: FormGroup<TaskFilterFormControls> = new FormGroup({

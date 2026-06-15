@@ -21,10 +21,11 @@ export class TaskApiService {
 
   constructor(private readonly http: HttpClient) {}
 
-  getTasks(criteria: TaskSearchCriteria = {}, page = 0, size = 10): Observable<PageResponse<Task>> {
+  getTasks(criteria: TaskSearchCriteria = {}, page = 0, size = 10, sort = 'createdAt,desc'): Observable<PageResponse<Task>> {
     let params = new HttpParams()
       .set('page', page)
-      .set('size', size);
+      .set('size', size)
+      .set('sort', sort);
 
     if (criteria.name) {
       params = params.set('name', criteria.name);
