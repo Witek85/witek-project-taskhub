@@ -8,6 +8,7 @@ import { TaskStatus } from "../../models/task-status.model";
 export class TaskListPageStateService {
   public readonly page: WritableSignal<number> = signal(0);
   public readonly size: WritableSignal<number> = signal(10);
+  public readonly first: WritableSignal<number> = signal(0);
   public readonly totalElements: WritableSignal<number> = signal(0);
   public readonly totalPages: WritableSignal<number> = signal(0);
   public readonly sortField: WritableSignal<string> = signal('createdAt');
@@ -31,6 +32,7 @@ export class TaskListPageStateService {
 
   public resetPagination(): void {
     this.page.set(0);
+    this.first.set(0);
   }
 
   public resetSort(): void {

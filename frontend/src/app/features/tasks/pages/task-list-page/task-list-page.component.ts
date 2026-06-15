@@ -119,6 +119,7 @@ export class TaskListPageComponent implements OnInit {
     const sortOrder = event.sortOrder ?? this.taskListPageStateService.sortOrder();
 
     this.taskListPageStateService.setSort(sortField, sortOrder);
+    this.taskListPageStateService.first.set(first);
 
     this.scrollToTop();
     this.loadTasks(page, size);

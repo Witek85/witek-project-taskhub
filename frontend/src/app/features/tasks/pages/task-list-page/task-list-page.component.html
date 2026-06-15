@@ -82,6 +82,7 @@
   [loading]="loading()"
   [lazy]="true"
   [paginator]="true"
+  [first]="taskListPageStateService.first()"
   [rows]="taskListPageStateService.size()"
   [totalRecords]="taskListPageStateService.totalElements()"
   dataKey="id"
