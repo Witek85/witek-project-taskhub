@@ -74,7 +74,6 @@ public class TaskService {
 
     public TaskResponse replace(Long id, ReplaceTaskRequest request) {
         Task task = findTaskById(id);
-
         task.updateName(request.name());
         task.updateDescription(request.description());
         task.updatePriority(request.priority());
