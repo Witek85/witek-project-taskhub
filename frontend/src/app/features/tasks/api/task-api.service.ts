@@ -12,6 +12,7 @@ import {
 import { DictionaryOption } from '../models/dictionary-option.model';
 import { TaskPriority } from '../models/task-priority.model';
 import { TaskStatus } from '../models/task-status.model';
+import { CreateTaskCommentRequest, TaskComment } from '../models/task-comment.model';
 
 @Injectable({
   providedIn: 'root'
@@ -79,6 +80,22 @@ export class TaskApiService {
   getStatuses(): Observable<DictionaryOption<TaskStatus>[]> {
     return this.http.get<DictionaryOption<TaskStatus>[]>(
       `${this.apiUrl}/dictionary/statuses`
+    );
+  }
+
+  getCommentsByTaskId(taskId: number): Observable<TaskComment[]> {
+    return this.http.get<TaskComment[]>(
+      `${this.apiUrl}/tasks/${taskId}/comments`
+    );
+  }
+
+  createComment(
+    taskId: number,
+    request: CreateTaskCommentRequest
+  ): Observable<TaskComment> {
+    return this.http.post<TaskComment>(
+      `${this.apiUrl}/tasks/${taskId}/comments`,
+      request
     );
   }
 }
