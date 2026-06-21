@@ -21,7 +21,7 @@ public class CommentService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
 
-        return commentRepository.findByTaskIdOrderByCreatedAtAsc(task.getId())
+        return commentRepository.findByTaskIdOrderByCreatedAtDesc(task.getId())
                 .stream()
                 .map(this::toResponse)
                 .toList();
