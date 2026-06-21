@@ -1,5 +1,5 @@
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -32,17 +32,18 @@ import { finalize } from 'rxjs';
     ButtonModule,
     FluidModule,
     FormControlErrorStateDirective,
-    DialogModule
+    DialogModule,
   ],
   providers: [TaskFormPageStateService],
   templateUrl: './task-form-page.component.html',
-  styleUrl: './task-form-page.component.scss'
+  styleUrl: './task-form-page.component.scss',
 })
 export class TaskFormPageComponent implements OnInit {
   private readonly taskApi = inject(TaskApiService);
   private readonly route = inject(ActivatedRoute);
 
-  public readonly TaskFormPageStateService: TaskFormPageStateService = inject(TaskFormPageStateService);
+  public readonly TaskFormPageStateService: TaskFormPageStateService =
+    inject(TaskFormPageStateService);
   private readonly destroyRef: DestroyRef = inject(DestroyRef);
   private readonly loaderService = inject(LoaderService);
 
@@ -64,16 +65,16 @@ export class TaskFormPageComponent implements OnInit {
 
     this.getPriorities();
   }
-  
+
   public onClear(): void {
     this.TaskFormPageStateService.taskForm.reset();
   }
 
   public onClose(): void {
     this.showDialog.set(false);
-    this.dialogMessage.set('')
+    this.dialogMessage.set('');
   }
-  
+
   public onSubmit(): void {
     const form = this.TaskFormPageStateService.taskForm;
     if (form.invalid) {
@@ -95,33 +96,33 @@ export class TaskFormPageComponent implements OnInit {
   }
 
   private getPriorities(): void {
-    this.taskApi.getPriorities()
-    .pipe(
-      takeUntilDestroyed(this.destroyRef),
-    )
-    .subscribe((res) => {
-      this.priorities.set(res);
-    });
+    this.taskApi
+      .getPriorities()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        this.priorities.set(res);
+      });
   }
 
   private loadTask(id: number): void {
     this.loaderService.startLoading();
-    this.taskApi.getTaskById(id)
-    .pipe(
-      takeUntilDestroyed(this.destroyRef),
-      finalize(() => {
-        this.loaderService.completeLoading();
-      })
-    )
-    .subscribe({
-      next: task => {
-        this.task = task;
-        this.TaskFormPageStateService.updateForm(task);
-      },
-      error: (err) => {
-        console.log('error, err');
-      }
-    });
+    this.taskApi
+      .getTaskById(id)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.loaderService.completeLoading();
+        }),
+      )
+      .subscribe({
+        next: (task) => {
+          this.task = task;
+          this.TaskFormPageStateService.updateForm(task);
+        },
+        error: (err) => {
+          console.log('error, err');
+        },
+      });
   }
 
   private createTask(): void {
@@ -132,27 +133,28 @@ export class TaskFormPageComponent implements OnInit {
     }
 
     this.loaderService.startLoading();
-    this.taskApi.createTask({
-      name: value.name,
-      description: value.description,
-      priority: value.priority,
-    })
-    .pipe(
-      takeUntilDestroyed(this.destroyRef),
-      finalize(() => {
-        this.loaderService.completeLoading();
+    this.taskApi
+      .createTask({
+        name: value.name,
+        description: value.description,
+        priority: value.priority,
       })
-    )
-    .subscribe({
-      next: task => {
-        this.showDialog.set(true);
-        this.dialogMessage.set('Task has been succesfully created');
-        this.onClear();
-      },
-      error: (err) => {
-        console.log('error', err)
-      }
-    });
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.loaderService.completeLoading();
+        }),
+      )
+      .subscribe({
+        next: (task) => {
+          this.showDialog.set(true);
+          this.dialogMessage.set('Task has been succesfully created');
+          this.onClear();
+        },
+        error: (err) => {
+          console.log('error', err);
+        },
+      });
   }
 
   private updateTask(): void {
@@ -163,26 +165,27 @@ export class TaskFormPageComponent implements OnInit {
     }
 
     this.loaderService.startLoading();
-    this.taskApi.updateTask(this.task.id, {
-      name: value.name,
-      description: value.description,
-      priority: value.priority,
-      status: this.task.status,
-    })
-    .pipe(
-      takeUntilDestroyed(this.destroyRef),
-      finalize(() => {
-        this.loaderService.completeLoading();
+    this.taskApi
+      .updateTask(this.task.id, {
+        name: value.name,
+        description: value.description,
+        priority: value.priority,
+        status: this.task.status,
       })
-    )
-    .subscribe({
-      next: task => {
-        this.showDialog.set(true);
-        this.dialogMessage.set('Task has been succesfully updated');
-      },
-      error: (err) => {
-        console.log('error', err)
-      }
-    });
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.loaderService.completeLoading();
+        }),
+      )
+      .subscribe({
+        next: (task) => {
+          this.showDialog.set(true);
+          this.dialogMessage.set('Task has been succesfully updated');
+        },
+        error: (err) => {
+          console.log('error', err);
+        },
+      });
   }
 }

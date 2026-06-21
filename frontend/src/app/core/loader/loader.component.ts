@@ -8,7 +8,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   standalone: true,
   templateUrl: './loader.component.html',
   styleUrl: './loader.component.scss',
-   imports: [ProgressSpinnerModule],
+  imports: [ProgressSpinnerModule],
 })
 export class LoaderComponent {
   readonly loaderService = inject(LoaderService);

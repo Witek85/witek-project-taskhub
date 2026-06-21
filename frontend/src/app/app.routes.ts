@@ -9,38 +9,42 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'tasks'
+        redirectTo: 'tasks',
       },
       {
         path: 'tasks',
         loadComponent: () =>
-          import('./features/tasks/pages/task-list-page/task-list-page.component')
-            .then(m => m.TaskListPageComponent)
+          import('./features/tasks/pages/task-list-page/task-list-page.component').then(
+            (m) => m.TaskListPageComponent,
+          ),
       },
       {
         path: 'tasks/add',
         loadComponent: () =>
-          import('./features/tasks/pages/task-form-page/task-form-page.component')
-            .then(m => m.TaskFormPageComponent),
+          import('./features/tasks/pages/task-form-page/task-form-page.component').then(
+            (m) => m.TaskFormPageComponent,
+          ),
         data: {
-          mode: 'add'
-        }
+          mode: 'add',
+        },
       },
       {
         path: 'tasks/:id/edit',
         loadComponent: () =>
-          import('./features/tasks/pages/task-form-page/task-form-page.component')
-            .then(m => m.TaskFormPageComponent),
+          import('./features/tasks/pages/task-form-page/task-form-page.component').then(
+            (m) => m.TaskFormPageComponent,
+          ),
         data: {
-          mode: 'edit'
-        }
+          mode: 'edit',
+        },
       },
       {
         path: 'tasks/:id',
         loadComponent: () =>
-          import('./features/tasks/pages/task-details-page/task-details-page.component')
-            .then(m => m.TaskDetailsPageComponent)
-      }
-    ]
-  }
+          import('./features/tasks/pages/task-details-page/task-details-page.component').then(
+            (m) => m.TaskDetailsPageComponent,
+          ),
+      },
+    ],
+  },
 ];

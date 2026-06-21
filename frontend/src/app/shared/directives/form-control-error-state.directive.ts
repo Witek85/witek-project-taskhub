@@ -3,7 +3,7 @@ import { NgControl } from '@angular/forms';
 
 @Directive({
   selector: '[appFormControlErrorState]',
-  standalone: true
+  standalone: true,
 })
 export class FormControlErrorStateDirective {
   private readonly ngControl = inject(NgControl, { self: true, optional: true });

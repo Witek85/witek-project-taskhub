@@ -6,7 +6,6 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
-
 import { TaskApiService } from '../../api/task-api.service';
 import { Task, TaskSearchCriteria } from '../../models/task.model';
 import { LoaderService } from '../../../../core/loader/loader.service';
@@ -26,10 +25,20 @@ import { TableLazyLoadEvent } from 'primeng/table';
 
 @Component({
   selector: 'app-task-list-page',
-  imports: [TableModule, ButtonModule, TagModule, ConfirmDialogModule, ReactiveFormsModule, InputTextModule, SelectModule, DatePickerModule, DatePipe],
+  imports: [
+    TableModule,
+    ButtonModule,
+    TagModule,
+    ConfirmDialogModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    SelectModule,
+    DatePickerModule,
+    DatePipe,
+  ],
   providers: [ConfirmationService, TaskListPageStateService],
   templateUrl: './task-list-page.component.html',
-  styleUrl: './task-list-page.component.scss'
+  styleUrl: './task-list-page.component.scss',
 })
 export class TaskListPageComponent implements OnInit {
   tasks = signal<Task[]>([]);
@@ -38,7 +47,8 @@ export class TaskListPageComponent implements OnInit {
   public statuses = signal<DictionaryOption<TaskStatus>[]>([]);
   public searchCriteria = signal<TaskSearchCriteria>({});
 
-  public readonly taskListPageStateService: TaskListPageStateService = inject(TaskListPageStateService);
+  public readonly taskListPageStateService: TaskListPageStateService =
+    inject(TaskListPageStateService);
   private readonly destroyRef: DestroyRef = inject(DestroyRef);
   private readonly loaderService = inject(LoaderService);
   private readonly taskApi = inject(TaskApiService);
@@ -56,7 +66,7 @@ export class TaskListPageComponent implements OnInit {
       priority: null,
       status: null,
       createdFrom: null,
-      createdTo: null
+      createdTo: null,
     });
 
     this.searchCriteria.set({});
@@ -65,7 +75,7 @@ export class TaskListPageComponent implements OnInit {
 
     this.loadTasks(0, this.taskListPageStateService.size());
   }
-  
+
   public onSubmit(): void {
     const criteria = this.buildSearchCriteria();
 
@@ -78,30 +88,31 @@ export class TaskListPageComponent implements OnInit {
 
   public loadTasks(
     page = this.taskListPageStateService.page(),
-    size = this.taskListPageStateService.size()
+    size = this.taskListPageStateService.size(),
   ): void {
-  this.loading.set(true);
+    this.loading.set(true);
 
-  this.taskApi.getTasks(this.searchCriteria(), page, size,  this.buildSortParam())
-    .pipe(
-      takeUntilDestroyed(this.destroyRef),
-      finalize(() => this.loading.set(false))
-    )
-    .subscribe({
-      next: response => {
-        this.tasks.set(response.content);
+    this.taskApi
+      .getTasks(this.searchCriteria(), page, size, this.buildSortParam())
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe({
+        next: (response) => {
+          this.tasks.set(response.content);
 
-        this.taskListPageStateService.setPageData(
-          response.totalElements,
-          response.totalPages,
-          response.number,
-          response.size
-        );
-      },
-      error: err => {
-        console.log('error', err);
-      }
-    });
+          this.taskListPageStateService.setPageData(
+            response.totalElements,
+            response.totalPages,
+            response.number,
+            response.size,
+          );
+        },
+        error: (err) => {
+          console.log('error', err);
+        },
+      });
   }
 
   public onLazyLoadTasks(event: TableLazyLoadEvent): void {
@@ -145,27 +156,28 @@ export class TaskListPageComponent implements OnInit {
       rejectButtonProps: {
         label: 'Cancel',
         severity: 'secondary',
-        outlined: true
+        outlined: true,
       },
       acceptButtonProps: {
         label: 'Delete',
-        severity: 'danger'
+        severity: 'danger',
       },
       accept: () => {
         this.deleteTask(taskId);
-      }
+      },
     });
   }
 
   private deleteTask(taskId: number): void {
     this.loaderService.startLoading();
 
-    this.taskApi.deleteTask(taskId)
+    this.taskApi
+      .deleteTask(taskId)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.loaderService.completeLoading();
-        })
+        }),
       )
       .subscribe({
         next: () => {
@@ -173,28 +185,26 @@ export class TaskListPageComponent implements OnInit {
         },
         error: (err: string) => {
           console.log('error', err);
-        }
+        },
       });
   }
 
   private getPriorities(): void {
-    this.taskApi.getPriorities()
-    .pipe(
-      takeUntilDestroyed(this.destroyRef),
-    )
-    .subscribe((res) => {
-      this.priorities.set(res);
-    });
+    this.taskApi
+      .getPriorities()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        this.priorities.set(res);
+      });
   }
 
   private getStatuses(): void {
-    this.taskApi.getStatuses()
-    .pipe(
-      takeUntilDestroyed(this.destroyRef),
-    )
-    .subscribe((res) => {
-      this.statuses.set(res);
-    });
+    this.taskApi
+      .getStatuses()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        this.statuses.set(res);
+      });
   }
 
   private buildSearchCriteria(): TaskSearchCriteria {
@@ -231,7 +241,7 @@ export class TaskListPageComponent implements OnInit {
   private scrollToTop(): void {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   }
 }

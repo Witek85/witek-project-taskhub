@@ -7,7 +7,7 @@ import {
   PageResponse,
   Task,
   TaskSearchCriteria,
-  UpdateTaskRequest
+  UpdateTaskRequest,
 } from '../models/task.model';
 import { DictionaryOption } from '../models/dictionary-option.model';
 import { TaskPriority } from '../models/task-priority.model';
@@ -15,18 +15,20 @@ import { TaskStatus } from '../models/task-status.model';
 import { CreateTaskCommentRequest, TaskComment } from '../models/task-comment.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TaskApiService {
   private readonly apiUrl = `${environment.apiUrl}`;
 
   constructor(private readonly http: HttpClient) {}
 
-  getTasks(criteria: TaskSearchCriteria = {}, page = 0, size = 10, sort = 'createdAt,desc'): Observable<PageResponse<Task>> {
-    let params = new HttpParams()
-      .set('page', page)
-      .set('size', size)
-      .set('sort', sort);
+  getTasks(
+    criteria: TaskSearchCriteria = {},
+    page = 0,
+    size = 10,
+    sort = 'createdAt,desc',
+  ): Observable<PageResponse<Task>> {
+    let params = new HttpParams().set('page', page).set('size', size).set('sort', sort);
 
     if (criteria.name) {
       params = params.set('name', criteria.name);
@@ -72,30 +74,18 @@ export class TaskApiService {
   }
 
   getPriorities(): Observable<DictionaryOption<TaskPriority>[]> {
-    return this.http.get<DictionaryOption<TaskPriority>[]>(
-      `${this.apiUrl}/dictionary/priorities`
-    );
+    return this.http.get<DictionaryOption<TaskPriority>[]>(`${this.apiUrl}/dictionary/priorities`);
   }
 
   getStatuses(): Observable<DictionaryOption<TaskStatus>[]> {
-    return this.http.get<DictionaryOption<TaskStatus>[]>(
-      `${this.apiUrl}/dictionary/statuses`
-    );
+    return this.http.get<DictionaryOption<TaskStatus>[]>(`${this.apiUrl}/dictionary/statuses`);
   }
 
   getCommentsByTaskId(taskId: number): Observable<TaskComment[]> {
-    return this.http.get<TaskComment[]>(
-      `${this.apiUrl}/tasks/${taskId}/comments`
-    );
+    return this.http.get<TaskComment[]>(`${this.apiUrl}/tasks/${taskId}/comments`);
   }
 
-  createComment(
-    taskId: number,
-    request: CreateTaskCommentRequest
-  ): Observable<TaskComment> {
-    return this.http.post<TaskComment>(
-      `${this.apiUrl}/tasks/${taskId}/comments`,
-      request
-    );
+  createComment(taskId: number, request: CreateTaskCommentRequest): Observable<TaskComment> {
+    return this.http.post<TaskComment>(`${this.apiUrl}/tasks/${taskId}/comments`, request);
   }
 }

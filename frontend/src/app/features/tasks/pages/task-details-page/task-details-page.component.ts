@@ -19,7 +19,7 @@ import { LoaderService } from '../../../../core/loader/loader.service';
   selector: 'app-task-details-page',
   imports: [CardModule, TagModule, DatePipe, FormsModule, TextareaModule, ButtonModule],
   templateUrl: './task-details-page.component.html',
-  styleUrl: './task-details-page.component.scss'
+  styleUrl: './task-details-page.component.scss',
 })
 export class TaskDetailsPageComponent implements OnInit {
   task = signal<Task | null>(null);
@@ -34,7 +34,7 @@ export class TaskDetailsPageComponent implements OnInit {
 
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly taskApi: TaskApiService
+    private readonly taskApi: TaskApiService,
   ) {}
 
   public ngOnInit(): void {
@@ -47,25 +47,26 @@ export class TaskDetailsPageComponent implements OnInit {
     this.taskId.set(id);
     this.loading.set(true);
 
-    this.taskApi.getTaskById(id)
-    .pipe(
-      switchMap(task => {
-        this.task.set(task);
+    this.taskApi
+      .getTaskById(id)
+      .pipe(
+        switchMap((task) => {
+          this.task.set(task);
 
-        return this.taskApi.getCommentsByTaskId(task.id);
-      }),
-      takeUntilDestroyed(this.destroyRef),
-    )
-    .subscribe({
-      next: comments => {
-        console.log('comments', comments);
-        this.comments.set(comments);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-      }
-    });
+          return this.taskApi.getCommentsByTaskId(task.id);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (comments) => {
+          console.log('comments', comments);
+          this.comments.set(comments);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.loading.set(false);
+        },
+      });
   }
 
   public addComment(): void {
@@ -78,20 +79,21 @@ export class TaskDetailsPageComponent implements OnInit {
 
     this.loaderService.startLoading();
 
-    this.taskApi.createComment(taskId, { content })
+    this.taskApi
+      .createComment(taskId, { content })
       .pipe(
         switchMap(() => this.taskApi.getCommentsByTaskId(taskId)),
         takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.loaderService.completeLoading())
+        finalize(() => this.loaderService.completeLoading()),
       )
       .subscribe({
-        next: comments => {
+        next: (comments) => {
           this.comments.set(comments);
           this.newComment.set('');
         },
-        error: err => {
+        error: (err) => {
           console.log('error', err);
-        }
+        },
       });
-    }
+  }
 }

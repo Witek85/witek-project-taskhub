@@ -1,8 +1,8 @@
-import { Injectable, signal, WritableSignal } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
-import { TaskFilterFormControls } from "../../models/task.model";
-import { TaskPriority } from "../../models/task-priority.model";
-import { TaskStatus } from "../../models/task-status.model";
+import { Injectable, signal, WritableSignal } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { TaskFilterFormControls } from '../../models/task.model';
+import { TaskPriority } from '../../models/task-priority.model';
+import { TaskStatus } from '../../models/task-status.model';
 
 @Injectable()
 export class TaskListPageStateService {
@@ -13,7 +13,7 @@ export class TaskListPageStateService {
   public readonly totalPages: WritableSignal<number> = signal(0);
   public readonly sortField: WritableSignal<string> = signal('createdAt');
   public readonly sortOrder: WritableSignal<number> = signal(-1);
-  
+
   public get taskFilterForm(): FormGroup<TaskFilterFormControls> {
     return this._taskFilterForm;
   }
@@ -45,6 +45,6 @@ export class TaskListPageStateService {
     priority: new FormControl<TaskPriority | null>(null),
     status: new FormControl<TaskStatus | null>(null),
     createdFrom: new FormControl<Date | null>(null),
-    createdTo: new FormControl<Date | null>(null)
-  })
+    createdTo: new FormControl<Date | null>(null),
+  });
 }

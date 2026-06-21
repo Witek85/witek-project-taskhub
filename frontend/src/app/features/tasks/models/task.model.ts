@@ -45,7 +45,7 @@ export type TaskFormControls = {
   name: FormControl<string | null>;
   description: FormControl<string | null>;
   priority: FormControl<TaskPriority | null>;
-}
+};
 
 export type TaskFilterFormControls = {
   name: FormControl<string | null>;
@@ -53,4 +53,4 @@ export type TaskFilterFormControls = {
   status: FormControl<TaskStatus | null>;
   createdFrom: FormControl<Date | null>;
   createdTo: FormControl<Date | null>;
-}
+};
