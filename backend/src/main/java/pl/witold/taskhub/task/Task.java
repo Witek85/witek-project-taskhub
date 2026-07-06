@@ -1,7 +1,11 @@
 package pl.witold.taskhub.task;
 
 import jakarta.persistence.*;
+import pl.witold.taskhub.tag.Tag;
+
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tasks")
@@ -31,6 +35,20 @@ public class Task {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "task_tags",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"),
+            uniqueConstraints = {
+                    @UniqueConstraint(
+                            name = "uk_task_tags_task_id_tag_id",
+                            columnNames = {"task_id", "tag_id"}
+                    )
+            }
+    )
+    private Set<Tag> tags = new HashSet<>();
+
     protected Task() {
     }
 
@@ -59,6 +77,9 @@ public class Task {
     public TaskStatus getStatus() { return status; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public Set<Tag> getTags() {
+        return tags;
+    }
 
     public void update(String name, String description, TaskPriority priority, TaskStatus status) {
         this.name = name;
@@ -88,6 +109,14 @@ public class Task {
     public void updateStatus(TaskStatus status) {
         if (status != null) {
             this.status = status;
+        }
+    }
+
+    public void replaceTags(Set<Tag> tags) {
+        this.tags.clear();
+
+        if (tags != null) {
+            this.tags.addAll(tags);
         }
     }
 }

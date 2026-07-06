@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.witold.taskhub.dictionary.dto.DictionaryOptionResponse;
+import pl.witold.taskhub.tag.TagRepository;
 import pl.witold.taskhub.task.TaskPriority;
 import pl.witold.taskhub.task.TaskStatus;
 
@@ -13,6 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/dictionary")
 public class DictionaryController {
+    private final TagRepository tagRepository;
+
+    public DictionaryController(TagRepository tagRepository) {
+        this.tagRepository = tagRepository;
+    }
 
     @GetMapping("/priorities")
     public List<DictionaryOptionResponse> getPriorities() {
@@ -31,6 +37,14 @@ public class DictionaryController {
                         status.getLabel(),
                         status.name()
                 ))
+                .toList();
+    }
+
+    @GetMapping("/tags")
+    public List<DictionaryOptionResponse> getTags() {
+        return tagRepository.findAllByActiveTrueOrderBySortOrderAscLabelAsc()
+                .stream()
+                .map(tag -> new DictionaryOptionResponse(tag.getLabel(), tag.getCode()))
                 .toList();
     }
 }

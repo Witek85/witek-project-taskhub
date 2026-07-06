@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import pl.witold.taskhub.task.TaskPriority;
 import pl.witold.taskhub.task.TaskStatus;
 
+import java.util.Set;
+
 public record ReplaceTaskRequest(
         @NotBlank(message = "Name is required")
         @Size(max = 255)
@@ -18,6 +20,8 @@ public record ReplaceTaskRequest(
         TaskPriority priority,
 
         @NotNull(message = "Status is required")
-        TaskStatus status
+        TaskStatus status,
+
+        Set<String> tagCodes
 ) {
 }

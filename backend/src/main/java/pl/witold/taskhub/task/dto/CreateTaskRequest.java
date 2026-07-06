@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import pl.witold.taskhub.task.TaskPriority;
 
+import java.util.Set;
+
 public record CreateTaskRequest(
         @NotBlank(message = "Name is required")
         @Size(max = 255, message = "Name cannot be longer than 255 characters")
@@ -14,6 +16,8 @@ public record CreateTaskRequest(
         String description,
 
         @NotNull(message = "Priority is required")
-        TaskPriority priority
+        TaskPriority priority,
+
+        Set<String> tagCodes
 ) {
 }
