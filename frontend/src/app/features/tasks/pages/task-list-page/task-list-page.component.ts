@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { TaskApiService } from '../../api/task-api.service';
@@ -22,13 +21,14 @@ import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { DatePipe } from '@angular/common';
 import { TableLazyLoadEvent } from 'primeng/table';
+import { TagPillComponent } from '../../../../shared/components/tag-pill/tag-pill.component';
 
 @Component({
   selector: 'app-task-list-page',
   imports: [
     TableModule,
     ButtonModule,
-    TagModule,
+    TagPillComponent,
     ConfirmDialogModule,
     ReactiveFormsModule,
     InputTextModule,

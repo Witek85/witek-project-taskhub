@@ -13,6 +13,7 @@ export class TaskFormPageStateService {
     name: new FormControl<string | null>(null, [Validators.required, Validators.maxLength(255)]),
     description: new FormControl<string | null>(null, [Validators.maxLength(2000)]),
     priority: new FormControl<TaskPriority | null>(null, [Validators.required]),
+    tagCodes: new FormControl<string[] | null>([]),
   });
 
   public updateForm(task: Task): void {
@@ -21,6 +22,7 @@ export class TaskFormPageStateService {
         name: task.name,
         description: task.description,
         priority: task.priority,
+        tagCodes: task.tags.map((tag) => tag.code),
       },
       { emitEvent: false },
     );

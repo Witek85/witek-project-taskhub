@@ -88,4 +88,8 @@ export class TaskApiService {
   createComment(taskId: number, request: CreateTaskCommentRequest): Observable<TaskComment> {
     return this.http.post<TaskComment>(`${this.apiUrl}/tasks/${taskId}/comments`, request);
   }
+
+  getTags(): Observable<DictionaryOption[]> {
+    return this.http.get<DictionaryOption[]>(`${this.apiUrl}/dictionary/tags`);
+  }
 }

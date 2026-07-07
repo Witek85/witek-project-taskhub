@@ -5,13 +5,27 @@
     </p>
 
     <p>
+      <strong>Tags:</strong>
+
+      @if (task.tags.length) {
+        <div class="flex flex-wrap justify-start gap-2">
+          @for (tag of task.tags; track tag.code) {
+            <ws-tag-pill [value]="tag.label" [color]="tag.color ?? null" />
+          }
+        </div>
+      } @else {
+        <span>No tags</span>
+      }
+    </p>
+
+    <p>
       Priority:
-      <p-tag [value]="task.priority"></p-tag>
+      <ws-tag-pill [value]="task.priority" />
     </p>
 
     <p>
       Status:
-      <p-tag [value]="task.status"></p-tag>
+      <ws-tag-pill [value]="task.status" />
     </p>
 
     <p>Created: {{ task.createdAt | date: 'dd.MM.yyyy HH:mm' }}</p>

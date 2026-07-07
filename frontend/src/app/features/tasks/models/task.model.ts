@@ -2,6 +2,12 @@ import { FormControl } from '@angular/forms';
 import { TaskPriority } from './task-priority.model';
 import { TaskStatus } from './task-status.model';
 
+export interface TaskTag {
+  code: string;
+  label: string;
+  color?: string | null;
+}
+
 export interface Task {
   id: number;
   name: string;
@@ -10,12 +16,14 @@ export interface Task {
   updatedAt: string;
   priority: TaskPriority;
   status: TaskStatus;
+  tags: TaskTag[];
 }
 
 export interface CreateTaskRequest {
   name: string;
   description: string | null;
   priority: TaskPriority;
+  tagCodes: string[];
 }
 
 export interface UpdateTaskRequest {
@@ -23,6 +31,7 @@ export interface UpdateTaskRequest {
   description?: string | null;
   priority?: TaskPriority;
   status?: TaskStatus;
+  tagCodes?: string[];
 }
 
 export interface PageResponse<T> {
@@ -45,6 +54,7 @@ export type TaskFormControls = {
   name: FormControl<string | null>;
   description: FormControl<string | null>;
   priority: FormControl<TaskPriority | null>;
+  tagCodes: FormControl<string[] | null>;
 };
 
 export type TaskFilterFormControls = {

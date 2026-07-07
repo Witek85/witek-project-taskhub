@@ -9,6 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { DialogModule } from 'primeng/dialog';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 import { TaskApiService } from '../../api/task-api.service';
 import { DictionaryOption } from '../../models/dictionary-option.model';
@@ -33,6 +34,7 @@ import { finalize } from 'rxjs';
     FluidModule,
     FormControlErrorStateDirective,
     DialogModule,
+    MultiSelectModule,
   ],
   providers: [TaskFormPageStateService],
   templateUrl: './task-form-page.component.html',
@@ -51,6 +53,7 @@ export class TaskFormPageComponent implements OnInit {
   public showDialog = signal<boolean>(false);
   public dialogMessage = signal<string>('');
   public editMode = signal<boolean>(false);
+  public tags = signal<DictionaryOption[]>([]);
 
   public task!: Task;
 
@@ -64,6 +67,7 @@ export class TaskFormPageComponent implements OnInit {
     }
 
     this.getPriorities();
+    this.getTags();
   }
 
   public onClear(): void {
@@ -104,6 +108,15 @@ export class TaskFormPageComponent implements OnInit {
       });
   }
 
+  private getTags(): void {
+    this.taskApi
+      .getTags()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        this.tags.set(res);
+      });
+  }
+
   private loadTask(id: number): void {
     this.loaderService.startLoading();
     this.taskApi
@@ -138,6 +151,7 @@ export class TaskFormPageComponent implements OnInit {
         name: value.name,
         description: value.description,
         priority: value.priority,
+        tagCodes: value.tagCodes ?? [],
       })
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -171,6 +185,7 @@ export class TaskFormPageComponent implements OnInit {
         description: value.description,
         priority: value.priority,
         status: this.task.status,
+        tagCodes: value.tagCodes ?? [],
       })
       .pipe(
         takeUntilDestroyed(this.destroyRef),

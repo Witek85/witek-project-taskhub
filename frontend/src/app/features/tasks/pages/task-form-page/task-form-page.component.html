@@ -34,6 +34,20 @@
             appFormControlErrorState
           />
         </div>
+        <div class="flex flex-col gap-2">
+          <label>Tags</label>
+          <p-multiselect
+            inputId="tagCodes"
+            formControlName="tagCodes"
+            [options]="tags()"
+            optionLabel="label"
+            optionValue="value"
+            display="chip"
+            placeholder="Select tags"
+            styleClass="w-full"
+          >
+          </p-multiselect>
+        </div>
       </div>
       <div class="flex justify-between mt-4">
         <div>

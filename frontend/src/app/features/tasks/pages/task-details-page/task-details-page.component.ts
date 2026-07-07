@@ -2,7 +2,6 @@ import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { CardModule } from 'primeng/card';
-import { TagModule } from 'primeng/tag';
 
 import { TaskApiService } from '../../api/task-api.service';
 import { Task } from '../../models/task.model';
@@ -14,10 +13,11 @@ import { ButtonModule } from 'primeng/button';
 import { finalize, switchMap } from 'rxjs/operators';
 import { TaskComment } from '../../models/task-comment.model';
 import { LoaderService } from '../../../../core/loader/loader.service';
+import { TagPillComponent } from '../../../../shared/components/tag-pill/tag-pill.component';
 
 @Component({
   selector: 'app-task-details-page',
-  imports: [CardModule, TagModule, DatePipe, FormsModule, TextareaModule, ButtonModule],
+  imports: [CardModule, TagPillComponent, DatePipe, FormsModule, TextareaModule, ButtonModule],
   templateUrl: './task-details-page.component.html',
   styleUrl: './task-details-page.component.scss',
 })
