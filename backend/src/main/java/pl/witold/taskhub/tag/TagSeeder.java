@@ -17,12 +17,12 @@ public class TagSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) {
         List<Tag> tags = List.of(
-                new Tag("FRONTEND", "Frontend", "blue", 10),
-                new Tag("BACKEND", "Backend", "green", 20),
-                new Tag("DEVOPS", "DevOps", "orange", 30),
-                new Tag("BUG", "Bug", "red", 40),
-                new Tag("FEATURE", "Feature", "purple", 50),
-                new Tag("REFACTOR", "Refactor", "gray", 60)
+                new Tag("FRONTEND", "Frontend", "#3b82f6", 10),
+                new Tag("BACKEND", "Backend", "#22c55e", 20),
+                new Tag("DEVOPS", "DevOps", "#f97316", 30),
+                new Tag("BUG", "Bug", "#ef4444", 40),
+                new Tag("FEATURE", "Feature", "#a855f7", 50),
+                new Tag("REFACTOR", "Refactor", "#6b7280", 60)
         );
 
         for (Tag tag : tags) {
