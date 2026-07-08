@@ -55,7 +55,7 @@ import { AuthService } from '../../core/auth/auth.service';
     <div class="layout-topbar-actions">
       <div class="layout-config-menu">
         @if (authService.currentUser(); as user) {
-          <span>Hello {{ user.username }}</span>
+          <span class="user-greeting-text">Hello {{ user.username }}</span>
         }
       </div>
 
@@ -70,6 +70,13 @@ import { AuthService } from '../../core/auth/auth.service';
       </div>
     </div>
   </div>`,
+  styles: `
+    .user-greeting-text {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+  `,
 })
 export class AppTopbar {
   public items!: MenuItem[];

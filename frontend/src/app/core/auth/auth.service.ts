@@ -32,6 +32,17 @@ export class AuthService {
       .pipe(tap((user) => this.currentUser.set(user)));
   }
 
+  public initCurrentUser(): void {
+    if (!this.getToken()) {
+      this.currentUser.set(null);
+      return;
+    }
+
+    this.me().subscribe({
+      error: () => this.logout(),
+    });
+  }
+
   public getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
