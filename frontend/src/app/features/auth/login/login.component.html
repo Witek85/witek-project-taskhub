@@ -1,0 +1,10 @@
+<input pInputText [(ngModel)]="username" placeholder="Username" />
+
+<p-password [(ngModel)]="password" placeholder="Password" [feedback]="false" [toggleMask]="true">
+</p-password>
+
+@if (error()) {
+  <small class="text-red-500">{{ error() }}</small>
+}
+
+<button pButton type="button" label="Sign In" [loading]="loading()" (click)="login()"></button>
