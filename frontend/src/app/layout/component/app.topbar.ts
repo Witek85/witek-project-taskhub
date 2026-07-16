@@ -57,6 +57,15 @@ import { AuthService } from '../../core/auth/auth.service';
         @if (authService.currentUser(); as user) {
           <span class="user-greeting-text">Hello {{ user.username }}</span>
         }
+        <button type="button" class="layout-topbar-action" (click)="toggleDarkMode()">
+          <i
+            [ngClass]="{
+              'pi ': true,
+              'pi-moon': layoutService.isDarkTheme(),
+              'pi-sun': !layoutService.isDarkTheme(),
+            }"
+          ></i>
+        </button>
       </div>
 
       <div class="layout-topbar-menu hidden lg:block">
@@ -96,6 +105,13 @@ export class AppTopbar {
 
   public layoutService = inject(LayoutService);
   public authService = inject(AuthService);
+
+  toggleDarkMode() {
+    this.layoutService.layoutConfig.update((state) => ({
+      ...state,
+      darkTheme: !state.darkTheme,
+    }));
+  }
 
   logout(): void {
     this.authService.logout();
