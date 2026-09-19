@@ -8,7 +8,14 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "format": "prettier --write \"src/**/*.{ts,html,scss,json}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,html,scss,json}\""
+    "format:check": "prettier --check \"src/**/*.{ts,html,scss,json}\"",
+    "openapi:taskhub:download": "node openapi/scripts/download-spec.mjs http://localhost:8080/v3/api-docs openapi/taskhub-service/openapi.json",
+    "openapi:taskhub:clean": "node openapi/scripts/clean-generated.mjs openapi/taskhub-service/generated",
+    "openapi:taskhub:generate": "openapi-generator-cli generate -c openapi/taskhub-service/generator-config.json",
+    "openapi:taskhub:refresh": "npm run openapi:taskhub:download && npm run openapi:taskhub:clean && npm run openapi:taskhub:generate",
+    "openapi:download": "npm run openapi:taskhub:download",
+    "openapi:generate": "npm run openapi:taskhub:generate",
+    "openapi:refresh": "npm run openapi:taskhub:refresh"
   },
   "prettier": {
     "printWidth": 100,
@@ -44,6 +51,7 @@
     "@angular/build": "^21.0.3",
     "@angular/cli": "^21.0.3",
     "@angular/compiler-cli": "^21.0.0",
+    "@openapitools/openapi-generator-cli": "^2.40.1",
     "jsdom": "^27.1.0",
     "prettier": "^3.8.4",
     "tailwindcss": "^4.1.11",

@@ -13,7 +13,11 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+    "paths": {
+      "@openapi/taskhub-service": ["./openapi/taskhub-service/generated/index.ts"],
+      "@openapi/taskhub-service/*": ["./openapi/taskhub-service/generated/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
