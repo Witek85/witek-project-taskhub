@@ -19,7 +19,12 @@ import {
   DictionaryControllerOpenApiService,
   TaskControllerOpenApiService,
 } from '@openapi/taskhub-service';
-import { mapCreateTaskToApi, mapTaskFromApi } from '../mappers/task.mapper';
+import {
+  mapCreateTaskToApi,
+  mapReplaceTaskToApi,
+  mapTaskFromApi,
+  mapUpdateTaskToApi,
+} from '../mappers/task.mapper';
 import { mapCommentFromApi } from '../mappers/comment.mapper';
 import { mapDictionaryOptionFromApi } from '../mappers/dictionary.mapper';
 
@@ -76,11 +81,15 @@ export class TaskApiService {
   }
 
   updateTaskPartially(id: number, request: Partial<UpdateTaskRequest>): Observable<Task> {
-    return this.http.patch<Task>(`${this.apiUrl}/tasks/${id}`, request);
+    return this.taskOpenApi
+      .patchTask({ id, updateTaskRequest: mapUpdateTaskToApi(request) })
+      .pipe(map(mapTaskFromApi));
   }
 
   updateTask(id: number, request: UpdateTaskRequest): Observable<Task> {
-    return this.http.put<Task>(`${this.apiUrl}/tasks/${id}`, request);
+    return this.taskOpenApi
+      .replace({ id, replaceTaskRequest: mapReplaceTaskToApi(request) })
+      .pipe(map(mapTaskFromApi));
   }
 
   deleteTask(id: number): Observable<void> {
