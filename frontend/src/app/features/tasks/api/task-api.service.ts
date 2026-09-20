@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   CreateTaskRequest,
@@ -13,12 +13,15 @@ import { DictionaryOption } from '../models/dictionary-option.model';
 import { TaskPriority } from '../models/task-priority.model';
 import { TaskStatus } from '../models/task-status.model';
 import { CreateTaskCommentRequest, TaskComment } from '../models/task-comment.model';
+import { TaskControllerOpenApiService } from '@openapi/taskhub-service';
+import { mapTaskFromApi } from '../mappers/task.mapper';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskApiService {
   private readonly apiUrl = `${environment.apiUrl}`;
+  private readonly openApi = inject(TaskControllerOpenApiService);
 
   constructor(private readonly http: HttpClient) {}
 
@@ -54,7 +57,7 @@ export class TaskApiService {
   }
 
   getTaskById(id: number): Observable<Task> {
-    return this.http.get<Task>(`${this.apiUrl}/tasks/${id}`);
+    return this.openApi.getById({ id }).pipe(map((response) => mapTaskFromApi(response)));
   }
 
   createTask(request: CreateTaskRequest): Observable<Task> {
@@ -70,7 +73,7 @@ export class TaskApiService {
   }
 
   deleteTask(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/tasks/${id}`);
+    return this.openApi._delete({ id });
   }
 
   getPriorities(): Observable<DictionaryOption<TaskPriority>[]> {

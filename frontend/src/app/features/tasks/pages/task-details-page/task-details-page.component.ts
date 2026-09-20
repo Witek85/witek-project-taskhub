@@ -14,6 +14,7 @@ import { finalize, switchMap } from 'rxjs/operators';
 import { TaskComment } from '../../models/task-comment.model';
 import { LoaderService } from '../../../../core/loader/loader.service';
 import { TagPillComponent } from '../../../../shared/components/tag-pill/tag-pill.component';
+import { of } from 'rxjs/internal/observable/of';
 
 @Component({
   selector: 'app-task-details-page',
