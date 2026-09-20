@@ -17,14 +17,11 @@ export class TaskFormPageStateService {
   });
 
   public updateForm(task: Task): void {
-    this.taskForm.patchValue(
-      {
-        name: task.name,
-        description: task.description,
-        priority: task.priority,
-        tagCodes: task.tags.map((tag) => tag.code),
-      },
-      { emitEvent: false },
-    );
+    this.taskForm.patchValue({
+      name: task.name,
+      description: task.description,
+      priority: task.priority,
+      tagCodes: task.tags.map((tag) => tag.code),
+    });
   }
 }

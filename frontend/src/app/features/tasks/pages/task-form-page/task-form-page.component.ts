@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -9,7 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { DialogModule } from 'primeng/dialog';
-import { MultiSelectModule } from 'primeng/multiselect';
+import { MultiSelect, MultiSelectModule } from 'primeng/multiselect';
 
 import { TaskApiService } from '../../api/task-api.service';
 import { DictionaryOption } from '../../models/dictionary-option.model';
@@ -19,7 +19,7 @@ import { TaskFormPageStateService } from './task-form-page-state-service';
 import { Task, TaskFormControls } from '../../models/task.model';
 import { FormControlErrorStateDirective } from '../../../../shared/directives/form-control-error-state.directive';
 import { LoaderService } from '../../../../core/loader/loader.service';
-import { finalize } from 'rxjs';
+import { finalize, startWith } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -40,7 +40,8 @@ import { finalize } from 'rxjs';
   templateUrl: './task-form-page.component.html',
   styleUrl: './task-form-page.component.scss',
 })
-export class TaskFormPageComponent implements OnInit {
+export class TaskFormPageComponent implements OnInit, AfterViewInit {
+  @ViewChild('tagSelect') private tagSelect?: MultiSelect;
   private readonly taskApi = inject(TaskApiService);
   private readonly route = inject(ActivatedRoute);
 
@@ -68,6 +69,17 @@ export class TaskFormPageComponent implements OnInit {
 
     this.getPriorities();
     this.getTags();
+  }
+
+  public ngAfterViewInit(): void {
+    const tagCodes = this.TaskFormPageStateService.taskForm.controls.tagCodes;
+    tagCodes.valueChanges
+      .pipe(startWith(tagCodes.value), takeUntilDestroyed(this.destroyRef))
+      .subscribe((codes) => this.tagSelect?.writeValue(codes ?? []));
+  }
+
+  public onTagsChange(codes: string[]): void {
+    this.TaskFormPageStateService.taskForm.controls.tagCodes.setValue(codes);
   }
 
   public onClear(): void {

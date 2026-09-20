@@ -37,14 +37,15 @@
         <div class="flex flex-col gap-2">
           <label>Tags</label>
           <p-multiselect
+            #tagSelect
             inputId="tagCodes"
-            formControlName="tagCodes"
             [options]="tags()"
             optionLabel="label"
             optionValue="value"
             display="chip"
             placeholder="Select tags"
             styleClass="w-full"
+            (onChange)="onTagsChange($event.value)"
           >
           </p-multiselect>
         </div>
