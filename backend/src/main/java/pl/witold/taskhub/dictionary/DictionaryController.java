@@ -1,5 +1,6 @@
 package pl.witold.taskhub.dictionary;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +13,10 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/dictionary")
+@RequestMapping(
+        value = "/api/dictionary",
+        produces = MediaType.APPLICATION_JSON_VALUE
+)
 public class DictionaryController {
     private final TagRepository tagRepository;
 

@@ -1,6 +1,7 @@
 package pl.witold.taskhub.comment;
 
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import pl.witold.taskhub.comment.dto.CommentResponse;
 import pl.witold.taskhub.comment.dto.CreateCommentRequest;
@@ -8,7 +9,10 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/tasks/{taskId}/comments")
+@RequestMapping(
+        value = "/api/tasks/{taskId}/comments",
+        produces = MediaType.APPLICATION_JSON_VALUE
+)
 public class CommentController {
     private final CommentService commentService;
 

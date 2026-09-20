@@ -1,11 +1,16 @@
 package pl.witold.taskhub.auth;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping(
+        value = "/api/auth",
+        produces = MediaType.APPLICATION_JSON_VALUE
+)
+
 public class AuthController {
 
     private final AuthService authService;
