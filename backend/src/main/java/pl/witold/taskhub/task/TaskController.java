@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import pl.witold.taskhub.task.dto.CreateTaskRequest;
 import pl.witold.taskhub.task.dto.TaskResponse;
@@ -18,7 +19,10 @@ import java.time.LocalDate;
 import pl.witold.taskhub.task.dto.TaskSearchRequest;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping(
+        value = "/api/tasks",
+        produces = MediaType.APPLICATION_JSON_VALUE
+)
 public class TaskController {
 
     private final TaskService taskService;
