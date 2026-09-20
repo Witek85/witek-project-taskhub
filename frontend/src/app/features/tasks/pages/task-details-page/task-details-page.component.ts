@@ -60,7 +60,6 @@ export class TaskDetailsPageComponent implements OnInit {
       )
       .subscribe({
         next: (comments) => {
-          console.log('comments', comments);
           this.comments.set(comments);
           this.loading.set(false);
         },

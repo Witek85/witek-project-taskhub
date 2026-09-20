@@ -13,8 +13,12 @@ import { DictionaryOption } from '../models/dictionary-option.model';
 import { TaskPriority } from '../models/task-priority.model';
 import { TaskStatus } from '../models/task-status.model';
 import { CreateTaskCommentRequest, TaskComment } from '../models/task-comment.model';
-import { TaskControllerOpenApiService } from '@openapi/taskhub-service';
+import {
+  CommentControllerOpenApiService,
+  TaskControllerOpenApiService,
+} from '@openapi/taskhub-service';
 import { mapTaskFromApi } from '../mappers/task.mapper';
+import { mapCommentFromApi } from '../mappers/comment.mapper';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +26,7 @@ import { mapTaskFromApi } from '../mappers/task.mapper';
 export class TaskApiService {
   private readonly apiUrl = `${environment.apiUrl}`;
   private readonly openApi = inject(TaskControllerOpenApiService);
+  private readonly commentOpenApi = inject(CommentControllerOpenApiService);
 
   constructor(private readonly http: HttpClient) {}
 
@@ -85,7 +90,9 @@ export class TaskApiService {
   }
 
   getCommentsByTaskId(taskId: number): Observable<TaskComment[]> {
-    return this.http.get<TaskComment[]>(`${this.apiUrl}/tasks/${taskId}/comments`);
+    return this.commentOpenApi
+      .getCommentsByTaskId({ taskId })
+      .pipe(map((comments) => comments.map((comment) => mapCommentFromApi(comment, taskId))));
   }
 
   createComment(taskId: number, request: CreateTaskCommentRequest): Observable<TaskComment> {
