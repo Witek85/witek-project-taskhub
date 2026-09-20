@@ -1,7 +1,5 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 import {
   CreateTaskRequest,
   PageResponse,
@@ -23,6 +21,7 @@ import {
   mapCreateTaskToApi,
   mapReplaceTaskToApi,
   mapTaskFromApi,
+  mapTaskPageFromApi,
   mapUpdateTaskToApi,
 } from '../mappers/task.mapper';
 import { mapCommentFromApi } from '../mappers/comment.mapper';
@@ -32,12 +31,9 @@ import { mapDictionaryOptionFromApi } from '../mappers/dictionary.mapper';
   providedIn: 'root',
 })
 export class TaskApiService {
-  private readonly apiUrl = `${environment.apiUrl}`;
   private readonly taskOpenApi = inject(TaskControllerOpenApiService);
   private readonly commentOpenApi = inject(CommentControllerOpenApiService);
   private readonly dictionaryOpenApi = inject(DictionaryControllerOpenApiService);
-
-  constructor(private readonly http: HttpClient) {}
 
   getTasks(
     criteria: TaskSearchCriteria = {},
@@ -45,29 +41,16 @@ export class TaskApiService {
     size = 10,
     sort = 'createdAt,desc',
   ): Observable<PageResponse<Task>> {
-    let params = new HttpParams().set('page', page).set('size', size).set('sort', sort);
-
-    if (criteria.name) {
-      params = params.set('name', criteria.name);
-    }
-
-    if (criteria.priority) {
-      params = params.set('priority', criteria.priority);
-    }
-
-    if (criteria.status) {
-      params = params.set('status', criteria.status);
-    }
-
-    if (criteria.createdFrom) {
-      params = params.set('createdFrom', criteria.createdFrom);
-    }
-
-    if (criteria.createdTo) {
-      params = params.set('createdTo', criteria.createdTo);
-    }
-
-    return this.http.get<PageResponse<Task>>(`${this.apiUrl}/tasks`, { params });
+    return this.taskOpenApi
+      .getAll({
+        pageable: { page, size, sort: [sort] },
+        ...(criteria.name ? { name: criteria.name } : {}),
+        ...(criteria.priority ? { priority: criteria.priority } : {}),
+        ...(criteria.status ? { status: criteria.status } : {}),
+        ...(criteria.createdFrom ? { createdFrom: criteria.createdFrom } : {}),
+        ...(criteria.createdTo ? { createdTo: criteria.createdTo } : {}),
+      })
+      .pipe(map(mapTaskPageFromApi));
   }
 
   getTaskById(id: number): Observable<Task> {
