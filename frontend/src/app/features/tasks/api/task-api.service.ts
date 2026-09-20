@@ -15,10 +15,11 @@ import { TaskStatus } from '../models/task-status.model';
 import { CreateTaskCommentRequest, TaskComment } from '../models/task-comment.model';
 import {
   CommentControllerOpenApiService,
+  CreateCommentRequest as ApiCreateCommentRequest,
   DictionaryControllerOpenApiService,
   TaskControllerOpenApiService,
 } from '@openapi/taskhub-service';
-import { mapTaskFromApi } from '../mappers/task.mapper';
+import { mapCreateTaskToApi, mapTaskFromApi } from '../mappers/task.mapper';
 import { mapCommentFromApi } from '../mappers/comment.mapper';
 import { mapDictionaryOptionFromApi } from '../mappers/dictionary.mapper';
 
@@ -69,7 +70,9 @@ export class TaskApiService {
   }
 
   createTask(request: CreateTaskRequest): Observable<Task> {
-    return this.http.post<Task>(`${this.apiUrl}/tasks`, request);
+    return this.taskOpenApi
+      .create({ createTaskRequest: mapCreateTaskToApi(request) })
+      .pipe(map(mapTaskFromApi));
   }
 
   updateTaskPartially(id: number, request: Partial<UpdateTaskRequest>): Observable<Task> {
@@ -103,7 +106,10 @@ export class TaskApiService {
   }
 
   createComment(taskId: number, request: CreateTaskCommentRequest): Observable<TaskComment> {
-    return this.http.post<TaskComment>(`${this.apiUrl}/tasks/${taskId}/comments`, request);
+    const createCommentRequest: ApiCreateCommentRequest = { content: request.content };
+    return this.commentOpenApi
+      .create1({ taskId, createCommentRequest })
+      .pipe(map((comment) => mapCommentFromApi(comment, taskId)));
   }
 
   getTags(): Observable<DictionaryOption[]> {

@@ -1,12 +1,30 @@
 import {
+  CreateTaskRequest as ApiCreateTaskRequest,
+  CreateTaskRequestPriorityEnum,
   TaskResponse,
   TaskResponsePriorityEnum,
   TaskResponseStatusEnum,
 } from '@openapi/taskhub-service';
 
-import { Task, TaskTag } from '../models/task.model';
+import { CreateTaskRequest, Task, TaskTag } from '../models/task.model';
 import { TaskPriority } from '../models/task-priority.model';
 import { TaskStatus } from '../models/task-status.model';
+
+// The generated model represents unique JSON arrays as Set, which JSON.stringify omits.
+class JsonArraySet<T> extends Set<T> {
+  toJSON(): T[] {
+    return [...this];
+  }
+}
+
+export function mapCreateTaskToApi(request: CreateTaskRequest): ApiCreateTaskRequest {
+  return {
+    name: request.name,
+    ...(request.description !== null ? { description: request.description } : {}),
+    priority: CreateTaskRequestPriorityEnum[request.priority],
+    tagCodes: new JsonArraySet(request.tagCodes),
+  };
+}
 
 export function mapTaskFromApi(task: TaskResponse): Task {
   return {
