@@ -15,18 +15,21 @@ import { TaskStatus } from '../models/task-status.model';
 import { CreateTaskCommentRequest, TaskComment } from '../models/task-comment.model';
 import {
   CommentControllerOpenApiService,
+  DictionaryControllerOpenApiService,
   TaskControllerOpenApiService,
 } from '@openapi/taskhub-service';
 import { mapTaskFromApi } from '../mappers/task.mapper';
 import { mapCommentFromApi } from '../mappers/comment.mapper';
+import { mapDictionaryOptionFromApi } from '../mappers/dictionary.mapper';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskApiService {
   private readonly apiUrl = `${environment.apiUrl}`;
-  private readonly openApi = inject(TaskControllerOpenApiService);
+  private readonly taskOpenApi = inject(TaskControllerOpenApiService);
   private readonly commentOpenApi = inject(CommentControllerOpenApiService);
+  private readonly dictionaryOpenApi = inject(DictionaryControllerOpenApiService);
 
   constructor(private readonly http: HttpClient) {}
 
@@ -62,7 +65,7 @@ export class TaskApiService {
   }
 
   getTaskById(id: number): Observable<Task> {
-    return this.openApi.getById({ id }).pipe(map((response) => mapTaskFromApi(response)));
+    return this.taskOpenApi.getById({ id }).pipe(map((response) => mapTaskFromApi(response)));
   }
 
   createTask(request: CreateTaskRequest): Observable<Task> {
@@ -78,15 +81,19 @@ export class TaskApiService {
   }
 
   deleteTask(id: number): Observable<void> {
-    return this.openApi._delete({ id });
+    return this.taskOpenApi._delete({ id });
   }
 
   getPriorities(): Observable<DictionaryOption<TaskPriority>[]> {
-    return this.http.get<DictionaryOption<TaskPriority>[]>(`${this.apiUrl}/dictionary/priorities`);
+    return this.dictionaryOpenApi
+      .getPriorities()
+      .pipe(map((options) => options.map(mapDictionaryOptionFromApi<TaskPriority>)));
   }
 
   getStatuses(): Observable<DictionaryOption<TaskStatus>[]> {
-    return this.http.get<DictionaryOption<TaskStatus>[]>(`${this.apiUrl}/dictionary/statuses`);
+    return this.dictionaryOpenApi
+      .getStatuses()
+      .pipe(map((options) => options.map(mapDictionaryOptionFromApi<TaskStatus>)));
   }
 
   getCommentsByTaskId(taskId: number): Observable<TaskComment[]> {
@@ -100,6 +107,8 @@ export class TaskApiService {
   }
 
   getTags(): Observable<DictionaryOption[]> {
-    return this.http.get<DictionaryOption[]>(`${this.apiUrl}/dictionary/tags`);
+    return this.dictionaryOpenApi
+      .getTags()
+      .pipe(map((options) => options.map(mapDictionaryOptionFromApi<string>)));
   }
 }
