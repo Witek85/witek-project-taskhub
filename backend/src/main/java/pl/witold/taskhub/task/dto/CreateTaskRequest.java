@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import pl.witold.taskhub.task.TaskPriority;
 
-import java.util.Set;
+import java.util.List;
 
 public record CreateTaskRequest(
         @NotBlank(message = "Name is required")
@@ -18,6 +18,6 @@ public record CreateTaskRequest(
         @NotNull(message = "Priority is required")
         TaskPriority priority,
 
-        Set<String> tagCodes
+        List<String> tagCodes
 ) {
 }

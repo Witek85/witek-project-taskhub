@@ -122,19 +122,20 @@ public class TaskService {
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + id));
     }
 
-    private Set<Tag> resolveTags(Set<String> tagCodes) {
+    private Set<Tag> resolveTags(List<String> tagCodes) {
         if (tagCodes == null || tagCodes.isEmpty()) {
             return Set.of();
         }
 
-        List<Tag> tags = tagRepository.findByCodeIn(tagCodes);
+        Set<String> uniqueTagCodes = new HashSet<>(tagCodes);
 
-        if (tags.size() != tagCodes.size()) {
+        List<Tag> tags = tagRepository.findByCodeIn(uniqueTagCodes);
+
+        if (tags.size() != uniqueTagCodes.size()) {
             throw new IllegalArgumentException("One or more tags do not exist");
         }
 
         return new HashSet<>(tags);
     }
-
 
 }

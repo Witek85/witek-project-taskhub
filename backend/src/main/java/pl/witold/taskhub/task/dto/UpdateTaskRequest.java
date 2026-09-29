@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Size;
 import pl.witold.taskhub.task.TaskPriority;
 import pl.witold.taskhub.task.TaskStatus;
 
-import java.util.Set;
+import java.util.List;
 
 public record UpdateTaskRequest(
         @Size(max = 255)
@@ -17,6 +17,6 @@ public record UpdateTaskRequest(
 
         TaskStatus status,
 
-        Set<String> tagCodes
+        List<String> tagCodes
 ) {
 }
