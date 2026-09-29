@@ -119,7 +119,7 @@ public class TaskService {
 
     private Task findTaskById(Long id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + id));
+                .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     private Set<Tag> resolveTags(List<String> tagCodes) {

@@ -58,7 +58,7 @@ public class TaskServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> taskService.getById(99L))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(TaskNotFoundException.class)
                 .hasMessage("Task not found: 99");
     }
 
