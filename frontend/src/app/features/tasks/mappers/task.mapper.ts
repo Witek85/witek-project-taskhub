@@ -6,8 +6,6 @@ import {
   ReplaceTaskRequestPriorityEnum,
   ReplaceTaskRequestStatusEnum,
   TaskResponse,
-  TaskResponsePriorityEnum,
-  TaskResponseStatusEnum,
   UpdateTaskRequest as ApiUpdateTaskRequest,
   UpdateTaskRequestPriorityEnum,
   UpdateTaskRequestStatusEnum,
@@ -23,51 +21,32 @@ import {
 import { TaskPriority } from '../models/task-priority.model';
 import { TaskStatus } from '../models/task-status.model';
 
-// The generated model represents unique JSON arrays as Set, which JSON.stringify omits.
-class JsonArraySet<T> extends Set<T> {
-  toJSON(): T[] {
-    return [...this];
-  }
-}
-
 export function mapCreateTaskToApi(request: CreateTaskRequest): ApiCreateTaskRequest {
   return {
     name: request.name,
-    ...(request.description !== null ? { description: request.description } : {}),
-    priority: CreateTaskRequestPriorityEnum[request.priority],
-    tagCodes: new JsonArraySet(request.tagCodes),
+    description: request.description ?? undefined,
+    priority: request.priority as CreateTaskRequestPriorityEnum,
+    tagCodes: request.tagCodes,
   };
 }
 
 export function mapUpdateTaskToApi(request: Partial<UpdateTaskRequest>): ApiUpdateTaskRequest {
   return {
-    ...(request.name !== undefined ? { name: request.name } : {}),
-    ...(request.description != null ? { description: request.description } : {}),
-    ...(request.priority !== undefined
-      ? { priority: UpdateTaskRequestPriorityEnum[request.priority] }
-      : {}),
-    ...(request.status !== undefined
-      ? { status: UpdateTaskRequestStatusEnum[request.status] }
-      : {}),
-    ...(request.tagCodes !== undefined ? { tagCodes: new JsonArraySet(request.tagCodes) } : {}),
+    name: request.name,
+    description: request.description ?? undefined,
+    priority: request.priority as UpdateTaskRequestPriorityEnum | undefined,
+    status: request.status as UpdateTaskRequestStatusEnum | undefined,
+    tagCodes: request.tagCodes,
   };
 }
 
 export function mapReplaceTaskToApi(request: UpdateTaskRequest): ApiReplaceTaskRequest {
-  if (
-    request.name === undefined ||
-    request.priority === undefined ||
-    request.status === undefined
-  ) {
-    throw new Error('Replacing a task requires name, priority, and status.');
-  }
-
   return {
-    name: request.name,
-    ...(request.description != null ? { description: request.description } : {}),
-    priority: ReplaceTaskRequestPriorityEnum[request.priority],
-    status: ReplaceTaskRequestStatusEnum[request.status],
-    ...(request.tagCodes !== undefined ? { tagCodes: new JsonArraySet(request.tagCodes) } : {}),
+    name: request.name ?? '',
+    description: request.description ?? undefined,
+    priority: request.priority as ReplaceTaskRequestPriorityEnum,
+    status: request.status as ReplaceTaskRequestStatusEnum,
+    tagCodes: request.tagCodes,
   };
 }
 
