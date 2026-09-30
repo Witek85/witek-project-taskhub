@@ -49,6 +49,18 @@ pipeline {
                 }
             }
         }
+
+        stage('Frontend - Environment') {
+            steps {
+                sh '''
+                    echo "=== Node ==="
+                    node --version
+
+                    echo "=== npm ==="
+                    npm --version
+                '''
+            }
+        }
     }
 
 post {
@@ -57,6 +69,9 @@ post {
     }
 
     success {
+        archiveArtifacts artifacts: 'backend/target/*.jar',
+                         fingerprint: true
+
         echo 'Backend build successful.'
     }
 
