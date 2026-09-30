@@ -65,6 +65,14 @@ pipeline {
                 '''
             }
         }
+
+        stage('Frontend - Install') {
+            steps {
+                dir('frontend') {
+                    sh 'npm ci'
+                }
+            }
+        }
     }
 
 post {
