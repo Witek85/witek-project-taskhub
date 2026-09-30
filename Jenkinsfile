@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    environment {
+        POSTGRES_HOST = 'host.docker.internal'
+        POSTGRES_PORT = '5433'
+        POSTGRES_DB = 'taskhub'
+        POSTGRES_USER = 'taskhub'
+        POSTGRES_PASSWORD = 'taskhub'
+    }
+
     options {
         timestamps()
         disableConcurrentBuilds()
