@@ -5,8 +5,7 @@ pipeline {
         POSTGRES_HOST = 'host.docker.internal'
         POSTGRES_PORT = '5433'
         POSTGRES_DB = 'taskhub'
-        POSTGRES_USER = 'taskhub'
-        POSTGRES_PASSWORD = 'taskhub'
+        POSTGRES_CREDENTIALS = credentials('taskhub-postgres')
     }
 
     options {
@@ -40,19 +39,29 @@ pipeline {
             steps {
                 dir('backend') {
                     sh 'chmod +x mvnw'
-                    sh './mvnw clean package'
+
+                    withEnv([
+                        "POSTGRES_USER=${POSTGRES_CREDENTIALS_USR}",
+                        "POSTGRES_PASSWORD=${POSTGRES_CREDENTIALS_PSW}"
+                    ]) {
+                        sh './mvnw clean package'
+                    }
                 }
             }
         }
     }
 
-    post {
-        success {
-            echo 'Backend build successful.'
-        }
-
-        failure {
-            echo 'Backend build failed.'
-        }
+post {
+    always {
+        junit 'backend/target/surefire-reports/*.xml'
     }
+
+    success {
+        echo 'Backend build successful.'
+    }
+
+    failure {
+        echo 'Backend build failed.'
+    }
+}
 }
