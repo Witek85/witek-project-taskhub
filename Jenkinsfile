@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'node24'
+    }
+
     environment {
         POSTGRES_HOST = 'host.docker.internal'
         POSTGRES_PORT = '5433'
