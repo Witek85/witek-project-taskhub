@@ -218,6 +218,70 @@ pipeline {
                 '''
             }
         }
+
+        stage('Deploy Frontend') {
+            steps {
+                sshagent(credentials: ['taskhub-vps-ssh']) {
+                    sh '''
+                        set -e
+
+                        echo "Packing frontend..."
+                        tar -C frontend/dist/frontend/browser \
+                            -czf /tmp/taskhub-frontend.tar.gz .
+
+                        echo "Uploading frontend..."
+                        scp \
+                            -o StrictHostKeyChecking=accept-new \
+                            /tmp/taskhub-frontend.tar.gz \
+                            "$VPS_USER@$VPS_HOST:/tmp/taskhub-frontend.tar.gz"
+
+                        echo "Deploying frontend..."
+
+                        ssh \
+                            -o StrictHostKeyChecking=accept-new \
+                            "$VPS_USER@$VPS_HOST" \
+                            '
+                                set -e
+
+                                rm -rf /tmp/taskhub-frontend
+                                mkdir -p /tmp/taskhub-frontend
+
+                                tar -xzf /tmp/taskhub-frontend.tar.gz \
+                                    -C /tmp/taskhub-frontend
+
+                                sudo rm -rf /var/www/taskhub
+                                sudo mkdir -p /var/www/taskhub
+
+                                sudo cp -a \
+                                    /tmp/taskhub-frontend/. \
+                                    /var/www/taskhub/
+
+                                sudo systemctl reload nginx
+
+                                echo "Frontend deployed."
+                            '
+                    '''
+                }
+            }
+        }
+
+        stage('Frontend - Smoke Test') {
+            steps {
+                sh '''
+                    for i in $(seq 1 10); do
+                        if node -e "fetch('https://taskhub.itreallyworks.pl/tasks').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"; then
+                            echo "Frontend smoke test passed."
+                            exit 0
+                        fi
+
+                        sleep 3
+                    done
+
+                    echo "Frontend smoke test failed."
+                    exit 1
+                '''
+            }
+        }
     }
 
 	post {
