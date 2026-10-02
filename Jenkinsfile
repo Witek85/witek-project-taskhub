@@ -14,6 +14,7 @@ pipeline {
     options {
         timestamps()
         disableConcurrentBuilds()
+        skipDefaultCheckout(true)
     }
 
     stages {
@@ -142,6 +143,15 @@ pipeline {
 				}
 			}
 		}
+
+		stage('SSH - Environment') {
+            steps {
+                sh '''
+                    echo "=== SSH ==="
+                    ssh -V
+                '''
+            }
+        }
     }
 
 	post {
@@ -149,12 +159,19 @@ pipeline {
 			junit 'backend/target/surefire-reports/*.xml'
 		}
 
-        success {
-            archiveArtifacts artifacts: 'backend/target/*.jar',
-                             fingerprint: true
+    success {
+        archiveArtifacts(
+            artifacts: 'backend/target/*.jar',
+            fingerprint: true
+        )
 
-            echo 'TaskHub pipeline successful.'
-        }
+        archiveArtifacts(
+            artifacts: 'frontend/dist/frontend/browser/**',
+            fingerprint: true
+        )
+
+        echo 'TaskHub pipeline successful.'
+    }
 
         failure {
             echo 'TaskHub pipeline failed.'
