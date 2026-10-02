@@ -9,6 +9,9 @@ pipeline {
         POSTGRES_HOST = 'host.docker.internal'
         POSTGRES_PORT = '5433'
         POSTGRES_DB = 'taskhub'
+
+        VPS_HOST = '51.83.154.177'
+        VPS_USER = 'ubuntu'
     }
 
     options {
@@ -144,12 +147,16 @@ pipeline {
 			}
 		}
 
-		stage('SSH - Environment') {
+		stage('SSH - Test VPS') {
             steps {
-                sh '''
-                    echo "=== SSH ==="
-                    ssh -V
-                '''
+                sshagent(credentials: ['taskhub-vps-ssh']) {
+                    sh '''
+                        ssh \
+                            -o StrictHostKeyChecking=accept-new \
+                            "$VPS_USER@$VPS_HOST" \
+                            'echo "=== VPS ===" && hostname && whoami'
+                    '''
+                }
             }
         }
     }
