@@ -159,6 +159,47 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy Backend') {
+            steps {
+                sshagent(credentials: ['taskhub-vps-ssh']) {
+                    sh '''
+                        set -e
+
+                        echo "Uploading backend JAR..."
+
+                        scp \
+                            -o StrictHostKeyChecking=accept-new \
+                            backend/target/taskhub-0.0.1-SNAPSHOT.jar \
+                            "$VPS_USER@$VPS_HOST:/tmp/taskhub-0.0.1-SNAPSHOT.jar"
+
+                        echo "Replacing backend JAR and restarting service..."
+
+                        ssh \
+                            -o StrictHostKeyChecking=accept-new \
+                            "$VPS_USER@$VPS_HOST" \
+                            '
+                                set -e
+
+                                sudo cp \
+                                    /tmp/taskhub-0.0.1-SNAPSHOT.jar \
+                                    /home/ubuntu/witek-project-taskhub/backend/target/taskhub-0.0.1-SNAPSHOT.jar
+
+                                sudo chown ubuntu:ubuntu \
+                                    /home/ubuntu/witek-project-taskhub/backend/target/taskhub-0.0.1-SNAPSHOT.jar
+
+                                sudo systemctl restart taskhub-backend
+
+                                sleep 5
+
+                                sudo systemctl is-active --quiet taskhub-backend
+
+                                echo "Backend service is active."
+                            '
+                    '''
+                }
+            }
+        }
     }
 
 	post {
