@@ -200,6 +200,24 @@ pipeline {
                 }
             }
         }
+
+        stage('Backend - Smoke Test') {
+            steps {
+                sh '''
+                    for i in $(seq 1 20); do
+                        if node -e "fetch('https://taskhub.itreallyworks.pl/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"; then
+                            echo "Backend smoke test passed."
+                            exit 0
+                        fi
+
+                        sleep 3
+                    done
+
+                    echo "Backend smoke test failed."
+                    exit 1
+                '''
+            }
+        }
     }
 
 	post {
