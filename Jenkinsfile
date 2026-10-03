@@ -21,21 +21,6 @@ pipeline {
     }
 
     stages {
-        stage('Environment') {
-            steps {
-                sh '''
-                    echo "=== Java ==="
-                    java -version
-
-                    echo "=== Git ==="
-                    git --version
-
-                    echo "=== Working directory ==="
-                    pwd
-                '''
-            }
-        }
-
         stage('Checkout') {
             steps {
                 checkout scm
@@ -70,18 +55,6 @@ pipeline {
                     artifacts: 'backend/target/openapi.json',
                     fingerprint: true
                 )
-            }
-        }
-
-        stage('Frontend - Environment') {
-            steps {
-                sh '''
-                    echo "=== Node ==="
-                    node --version
-
-                    echo "=== npm ==="
-                    npm --version
-                '''
             }
         }
 
@@ -253,27 +226,32 @@ pipeline {
         }
     }
 
-	post {
-		always {
-			junit 'backend/target/surefire-reports/*.xml'
-		}
+    post {
+        always {
+            junit 'backend/target/surefire-reports/*.xml'
+        }
 
-    success {
-        archiveArtifacts(
-            artifacts: 'backend/target/*.jar',
-            fingerprint: true
-        )
+        success {
+            archiveArtifacts(
+                artifacts: 'backend/target/*.jar',
+                fingerprint: true
+            )
 
-        archiveArtifacts(
-            artifacts: 'frontend/dist/frontend/browser/**',
-            fingerprint: true
-        )
+            archiveArtifacts(
+                artifacts: 'backend/target/openapi.json',
+                fingerprint: true
+            )
 
-        echo 'TaskHub pipeline successful.'
-    }
+            archiveArtifacts(
+                artifacts: 'frontend/dist/frontend/browser/**',
+                fingerprint: true
+            )
+
+            echo 'TaskHub pipeline successful.'
+        }
 
         failure {
             echo 'TaskHub pipeline failed.'
         }
-	}
+    }
 }
