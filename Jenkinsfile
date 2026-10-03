@@ -52,11 +52,24 @@ pipeline {
                             credentialsId: 'taskhub-postgres',
                             usernameVariable: 'POSTGRES_USER',
                             passwordVariable: 'POSTGRES_PASSWORD'
+                        ),
+                        string(
+                            credentialsId: 'taskhub-jwt-secret',
+                            variable: 'JWT_SECRET'
                         )
                     ]) {
-                        sh './mvnw clean package'
+                        sh './mvnw clean verify'
                     }
                 }
+            }
+        }
+
+        stage('OpenAPI - Publish') {
+            steps {
+                archiveArtifacts(
+                    artifacts: 'backend/target/openapi.json',
+                    fingerprint: true
+                )
             }
         }
 
@@ -80,58 +93,16 @@ pipeline {
 			}
 		}
 
-	    stage('Frontend - OpenAPI') {
+        stage('Frontend - OpenAPI') {
             steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'taskhub-postgres',
-                        usernameVariable: 'POSTGRES_USER',
-                        passwordVariable: 'POSTGRES_PASSWORD'
-                    )
-                ]) {
+                sh '''
+                    cp \
+                        backend/target/openapi.json \
+                        frontend/openapi/taskhub-service/openapi.json
+                '''
+
+                dir('frontend') {
                     sh '''
-                        set -e
-
-                        export JWT_SECRET="ci-test-secret-key-for-taskhub-12345678901234567890"
-
-                        echo "Starting backend for OpenAPI generation on port 18080..."
-
-                        java -jar backend/target/taskhub-0.0.1-SNAPSHOT.jar \
-                            --server.port=18080 \
-                            > backend-openapi.log 2>&1 &
-
-                        BACKEND_PID=$!
-
-                        cleanup() {
-                            echo "Stopping temporary backend..."
-                            kill $BACKEND_PID 2>/dev/null || true
-                        }
-
-                        trap cleanup EXIT
-
-                        echo "Waiting for backend..."
-
-                        for i in $(seq 1 30); do
-                            if node -e "fetch('http://localhost:18080/v3/api-docs').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"; then
-                                echo "Backend is ready."
-                                break
-                            fi
-
-                            if [ "$i" -eq 30 ]; then
-                                echo "Backend did not start."
-                                cat backend-openapi.log
-                                exit 1
-                            fi
-
-                            sleep 2
-                        done
-
-                        cd frontend
-
-                        node openapi/scripts/download-spec.mjs \
-                            http://localhost:18080/v3/api-docs \
-                            openapi/taskhub-service/openapi.json
-
                         npm run openapi:taskhub:clean
                         npm run openapi:taskhub:generate
                     '''
