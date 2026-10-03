@@ -118,15 +118,13 @@ pipeline {
 			}
 		}
 
-		stage('SSH - Test VPS') {
+		stage('Approve Production') {
             steps {
-                sshagent(credentials: ['taskhub-vps-ssh']) {
-                    sh '''
-                        ssh \
-                            -o StrictHostKeyChecking=accept-new \
-                            "$VPS_USER@$VPS_HOST" \
-                            'echo "=== VPS ===" && hostname && whoami'
-                    '''
+                timeout(time: 30, unit: 'MINUTES') {
+                    input(
+                        message: 'Deploy TaskHub to production?',
+                        ok: 'Deploy'
+                    )
                 }
             }
         }
